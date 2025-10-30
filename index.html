@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoEarn Pro - Watch Ads & Earn AMD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Monetag.com Ads Script -->
+    <script type="text/javascript">
+        (function() {
+            var script = document.createElement('script');
+            script.src = "https://cdn.monetag.com/tag.min.js";
+            script.setAttribute("data-publisher-id", "YOUR_PUBLISHER_ID_HERE");
+            script.async = true;
+            document.head.appendChild(script);
+        })();
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --secondary: #8B5CF6;
+            --accent: #06D6A0;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --dark: #1E293B;
+            --darker: #0F172A;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --gray-light: #E2E8F0;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 430px;
+            margin: 0 auto;
+            background: var(--dark);
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 80px; /* Footer-ի համար */
+        }
+
+        /* Header Styles */
+        .header {
+            background: var(--gradient);
+            padding: 20px 16px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .balance-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .balance-stats {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Top Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--dark);
+            margin: -40px 16px 20px;
+            border-radius: var(--radius);
+            padding: 8px;
+            position: relative;
+            z-index: 10;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-tab.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        /* Footer Navigation */
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--dark);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            max-width: 430px;
+            margin: 0 auto;
+        }
+
+        .footer-tabs {
+            display: flex;
+            padding: 12px 16px;
+        }
+
+        .footer-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .footer-tab.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .footer-tab i {
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 0 16px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .see-all {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Ads Grid */
+        .ads-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .ad-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            padding: 20px 16px;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: var(--shadow);
+        }
+
+        .ad-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ad-card.disabled:hover {
+            transform: none;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+        }
+
+        .ad-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 24px;
+        }
+
+        .ad-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .ad-reward {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .ad-duration {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 12px;
+        }
+
+        .ad-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .ad-action:hover {
+            background: var(--primary-dark);
+        }
+
+        .ad-action.completed {
+            background: var(--accent);
+        }
+
+        .ad-action:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+        }
+
+        /* Daily Progress */
+        .daily-progress {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-title {
+            font-weight: 600;
+        }
+
+        .progress-count {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            opacity: 0.7;
+            text-align: center;
+        }
+
+        /* Welcome Bonus */
+        .welcome-bonus {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .welcome-bonus::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+
+        .welcome-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+            color: #000;
+        }
+
+        .welcome-desc {
+            font-size: 14px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+            color: #000;
+        }
+
+        .welcome-bonus-amount {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            z-index: 2;
+            color: #000;
+        }
+
+        .claim-bonus-btn {
+            background: #000;
+            color: #FFD700;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .claim-bonus-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .claim-bonus-btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Referral Section */
+        .referral-card {
+            background: var(--gradient);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .referral-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .referral-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .referral-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .referral-link-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .referral-link {
+            flex: 1;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .copy-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .referral-stats {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Withdrawal Section */
+        .withdrawal-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .visa-card {
+            background: linear-gradient(135deg, #1a1f71, #2a2a9a);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .visa-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .visa-logo {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .visa-logo i {
+            font-size: 40px;
+            color: white;
+        }
+
+        .card-number {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .card-holder, .card-expiry {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-label {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .withdraw-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+        }
+
+        .form-hint {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .withdraw-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        .withdraw-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .withdraw-btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .withdrawal-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-top: 16px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .info-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: none;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 380px) {
+            .ads-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="header-content">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                
+                <div class="balance-card">
+                    <div class="balance-label">Your Balance</div>
+                    <div class="balance-amount" id="balanceAmount">0 <span style="font-size: 18px; opacity: 0.8;">AMD</span></div>
+                    <div class="balance-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="adsWatched">0</div>
+                            <div class="stat-label">Ads Today</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="referralsCount">0</div>
+                            <div class="stat-label">Referrals</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalEarned">0 AMD</div>
+                            <div class="stat-label">Earned</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Navigation Tabs -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('ads')">Watch Ads</div>
+            <div class="nav-tab" onclick="switchTab('referrals')">Referrals</div>
+            <div class="nav-tab" onclick="switchTab('withdraw')">Withdraw</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Ads Section -->
+            <div class="section" id="ads-section">
+                <div class="section-title">
+                    Watch Ads & Earn AMD
+                    <span class="see-all" onclick="loadMoreAds()">Refresh</span>
+                </div>
+                
+                <!-- Welcome Bonus -->
+                <div class="welcome-bonus" id="welcomeBonus" style="display: none;">
+                    <div class="welcome-title">🎉 Welcome Bonus! 🎉</div>
+                    <div class="welcome-desc">As a new user, claim your 7000 AMD bonus to get started!</div>
+                    <div class="welcome-bonus-amount">7,000 AMD</div>
+                    <button class="claim-bonus-btn" onclick="claimWelcomeBonus()">Claim Bonus</button>
+                </div>
+                
+                <!-- Daily Progress -->
+                <div class="daily-progress">
+                    <div class="progress-header">
+                        <div class="progress-title">Daily Progress</div>
+                        <div class="progress-count" id="dailyProgress">0/10 ads watched</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFillBar"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Watch ads to earn AMD. Daily limit: 10 ads</div>
+                </div>
+                
+                <!-- Ads Grid -->
+                <div class="ads-grid" id="adsGrid">
+                    <!-- Ads will be loaded dynamically -->
+                </div>
+                
+                <!-- Loading indicator -->
+                <div id="loadingIndicator" style="text-align: center; padding: 20px; display: none;">
+                    <div class="loading-spinner"></div>
+                    <div style="margin-top: 10px; font-size: 14px; opacity: 0.7;">Loading ads...</div>
+                </div>
+            </div>
+
+            <!-- Referral Section -->
+            <div class="section" id="referrals-section" style="display: none;">
+                <div class="section-title">
+                    Refer & Earn AMD
+                </div>
+                <div class="referral-card">
+                    <div class="referral-title">Invite Friends</div>
+                    <div class="referral-desc">Share your referral link and earn 100 AMD for each friend who joins</div>
+                    <div class="referral-link-container">
+                        <div class="referral-link" id="referralLink">Loading...</div>
+                        <button class="copy-btn" onclick="copyReferralLink()">Copy</button>
+                    </div>
+                    <div class="referral-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="referralFriends">0</div>
+                            <div class="stat-label">Friends</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="referralPoints">0 AMD</div>
+                            <div class="stat-label">Earned</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="referralEarned">0 AMD</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdraw Section -->
+            <div class="section" id="withdraw-section" style="display: none;">
+                <div class="section-title">
+                    Withdraw AMD to Visa Card
+                </div>
+                
+                <div class="withdrawal-container">
+                    <!-- Visa Card Preview -->
+                    <div class="visa-card">
+                        <div class="visa-logo">
+                            <i class="fab fa-cc-visa"></i>
+                        </div>
+                        <div class="card-number" id="cardPreview">**** **** **** ****</div>
+                        <div class="card-details">
+                            <div class="card-holder">
+                                <div class="card-label">CARD HOLDER</div>
+                                <div id="namePreview">YOUR NAME</div>
+                            </div>
+                            <div class="card-expiry">
+                                <div class="card-label">EXPIRES</div>
+                                <div id="expiryPreview">MM/YY</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Withdrawal Form -->
+                    <div class="withdraw-form">
+                        <div class="form-group">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" class="form-input" id="cardNumber" 
+                                   placeholder="1234 5678 9012 3456" maxlength="19"
+                                   oninput="formatCardNumber(this)" onblur="validateCardNumber()">
+                            <div class="form-hint">16-digit Visa card number</div>
+                            <div id="cardError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
+                                Please enter a valid 16-digit Visa card number
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Cardholder Name</label>
+                            <input type="text" class="form-input" id="cardName" 
+                                   placeholder="John Doe" oninput="updateCardPreview()">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="text" class="form-input" id="cardExpiry" 
+                                       placeholder="MM/YY" maxlength="5"
+                                       oninput="formatExpiry(this)" onblur="validateExpiry()">
+                                <div id="expiryError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
+                                    Please enter a valid expiry date
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">CVV</label>
+                                <input type="text" class="form-input" id="cardCvv" 
+                                       placeholder="123" maxlength="3"
+                                       oninput="validateCvv(this)">
+                                <div id="cvvError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
+                                    Please enter a valid 3-digit CVV
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Withdrawal Amount</label>
+                            <input type="number" class="form-input" id="withdrawAmount" 
+                                   placeholder="100000" min="100000" oninput="validateWithdrawalAmount()">
+                            <div class="form-hint">Minimum withdrawal: 100,000 AMD</div>
+                            <div id="amountError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
+                                Minimum withdrawal amount is 100,000 AMD
+                            </div>
+                        </div>
+
+                        <button class="withdraw-btn" id="withdrawBtn" onclick="processWithdrawal()" disabled>
+                            Withdraw AMD to Visa Card
+                        </button>
+                    </div>
+
+                    <!-- Withdrawal Information -->
+                    <div class="withdrawal-info">
+                        <div class="info-title">
+                            <i class="fas fa-info-circle"></i>
+                            Important Information
+                        </div>
+                        <div class="info-text">
+                            • Minimum withdrawal: 100,000 AMD<br>
+                            • Withdrawals processed within 3-5 business days<br>
+                            • 2.9% processing fee applies<br>
+                            • Only Visa cards are accepted<br>
+                            • Earn 6,500 AMD daily from watching all ads
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <div class="footer-nav">
+            <div class="footer-tabs">
+                <div class="footer-tab active" onclick="switchTab('ads')">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Ads</span>
+                </div>
+                <div class="footer-tab" onclick="switchTab('referrals')">
+                    <i class="fas fa-users"></i>
+                    <span>Referrals</span>
+                </div>
+                <div class="footer-tab" onclick="switchTab('withdraw')">
+                    <i class="fas fa-wallet"></i>
+                    <span>Withdraw</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+        // Telegram WebApp initialization
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+        
+        // User data with localStorage persistence
+        let userData = {
+            balance: 0, // In AMD
+            adsWatched: 0,
+            adsWatchedToday: 0,
+            lastAdDate: null,
+            referrals: 0,
+            totalEarned: 0, // In AMD
+            referralLink: "",
+            memberSince: new Date().toISOString().split('T')[0],
+            welcomeBonusClaimed: false
+        };
+
+        // Load user data from localStorage
+        function loadUserData() {
+            const saved = localStorage.getItem('videoEarnUserData');
+            const today = new Date().toDateString();
+            
+            if (saved) {
+                userData = {...userData, ...JSON.parse(saved)};
+                
+                // Reset daily ads if it's a new day
+                if (userData.lastAdDate !== today) {
+                    userData.adsWatchedToday = 0;
+                    userData.lastAdDate = today;
+                    saveUserData();
+                }
+            } else {
+                userData.referralLink = `https://t.me/VideoEarnBot?start=ref${Math.random().toString(36).substr(2, 9)}`;
+                userData.lastAdDate = today;
+                saveUserData();
+            }
+            updateUI();
+        }
+
+        // Save user data to localStorage
+        function saveUserData() {
+            localStorage.setItem('videoEarnUserData', JSON.stringify(userData));
+        }
+
+        // Ads data - 10 ads per day, total 6500 AMD
+        const ads = [
+            { id: 1, title: "Ad 1", reward: 600, duration: "30s", icon: "ad" },
+            { id: 2, title: "Ad 2", reward: 620, duration: "25s", icon: "ad" },
+            { id: 3, title: "Ad 3", reward: 640, duration: "20s", icon: "ad" },
+            { id: 4, title: "Ad 4", reward: 660, duration: "35s", icon: "ad" },
+            { id: 5, title: "Ad 5", reward: 680, duration: "30s", icon: "ad" },
+            { id: 6, title: "Ad 6", reward: 700, duration: "40s", icon: "ad" },
+            { id: 7, title: "Ad 7", reward: 720, duration: "25s", icon: "ad" },
+            { id: 8, title: "Ad 8", reward: 740, duration: "30s", icon: "ad" },
+            { id: 9, title: "Ad 9", reward: 760, duration: "35s", icon: "ad" },
+            { id: 10, title: "Ad 10", reward: 780, duration: "45s", icon: "ad" }
+        ];
+
+        // DOM Elements
+        const toast = document.getElementById('toast');
+        const adsGrid = document.getElementById('adsGrid');
+
+        // Show toast notification
+        function showToast(message, duration = 3000) {
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, duration);
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            // Hide all sections
+            document.getElementById('ads-section').style.display = 'none';
+            document.getElementById('referrals-section').style.display = 'none';
+            document.getElementById('withdraw-section').style.display = 'none';
+            
+            // Remove active class from all tabs (both top and footer)
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.footer-tab').forEach(t => t.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(`${tab}-section`).style.display = 'block';
+            
+            // Activate corresponding tabs
+            document.querySelectorAll(`.nav-tab[onclick="switchTab('${tab}')"]`).forEach(t => {
+                t.classList.add('active');
+            });
+            document.querySelectorAll(`.footer-tab[onclick="switchTab('${tab}')"]`).forEach(t => {
+                t.classList.add('active');
+            });
+        }
+
+        // Claim welcome bonus
+        function claimWelcomeBonus() {
+            if (!userData.welcomeBonusClaimed) {
+                userData.balance += 7000;
+                userData.totalEarned += 7000;
+                userData.welcomeBonusClaimed = true;
+                updateUI();
+                saveUserData();
+                
+                document.getElementById('welcomeBonus').style.display = 'none';
+                showToast('🎉 Welcome bonus of 7,000 AMD claimed!');
+            }
+        }
+
+        // Monetag.com Integration Functions
+        function showMonetagAd(adId) {
+            if (userData.adsWatchedToday >= 10) {
+                showToast('Daily ad limit reached! Come back tomorrow.');
+                return;
+            }
+
+            if (typeof monetag !== 'undefined') {
+                monetag('send', 'event', 'ad_watch_triggered');
+                showToast('Ad loading... Please wait!');
+                
+                // Simulate ad watching with progress
+                let progress = 0;
+                const ad = ads.find(a => a.id === adId);
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    showToast(`Watching ad... ${progress}%`);
+                    
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                        
+                        // Credit user after ad completion (in AMD)
+                        userData.balance += ad.reward;
+                        userData.adsWatched += 1;
+                        userData.adsWatchedToday += 1;
+                        userData.totalEarned += ad.reward;
+                        updateUI();
+                        saveUserData();
+                        
+                        // Mark ad as completed
+                        document.getElementById(`ad-${adId}`).classList.add('disabled');
+                        document.getElementById(`ad-action-${adId}`).textContent = 'Completed';
+                        document.getElementById(`ad-action-${adId}`).classList.add('completed');
+                        document.getElementById(`ad-action-${adId}`).disabled = true;
+                        
+                        showToast(`Ad completed! You earned ${ad.reward} AMD!`);
+                    }
+                }, 300);
+            } else {
+                showToast('Ad network not loaded. Please try again.');
+            }
+        }
+
+        function loadMonetagNativeAds() {
+            if (typeof monetag !== 'undefined') {
+                // Load native ads if needed
+                monetag('load', 'monetag-ad-container', {
+                    format: 'native',
+                    width: 300,
+                    height: 250
+                });
+            }
+        }
+
+        // Load more ads (refresh)
+        function loadMoreAds() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'block';
+            
+            setTimeout(() => {
+                renderAds();
+                loadingIndicator.style.display = 'none';
+                showToast('Ads refreshed!');
+            }, 1000);
+        }
+
+        // Render ads to grid
+        function renderAds() {
+            adsGrid.innerHTML = '';
+            ads.forEach(ad => {
+                const isCompleted = userData.adsWatchedToday >= 10;
+                const adCard = document.createElement('div');
+                adCard.className = `ad-card ${isCompleted ? 'disabled' : ''}`;
+                adCard.id = `ad-${ad.id}`;
+                
+                adCard.innerHTML = `
+                    <div class="ad-icon">
+                        <i class="fas fa-${ad.icon}"></i>
+                    </div>
+                    <div class="ad-title">${ad.title}</div>
+                    <div class="ad-reward">
+                        <i class="fas fa-coins"></i> +${ad.reward} AMD
+                    </div>
+                    <div class="ad-duration">${ad.duration}</div>
+                    <button class="ad-action ${isCompleted ? 'completed' : ''}" 
+                            id="ad-action-${ad.id}"
+                            ${isCompleted ? 'disabled' : ''}
+                            onclick="showMonetagAd(${ad.id})">
+                        ${isCompleted ? 'Completed' : 'Watch Ad'}
+                    </button>
+                `;
+                
+                adsGrid.appendChild(adCard);
+            });
+        }
+
+        // Copy referral link
+        function copyReferralLink() {
+            navigator.clipboard.writeText(userData.referralLink).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'var(--accent)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'white';
+                }, 2000);
+                
+                showToast('Referral link copied to clipboard!');
+            });
+        }
+
+        // Card validation functions
+        function formatCardNumber(input) {
+            let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = '';
+            
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            
+            input.value = formattedValue;
+            updateCardPreview();
+            validateCardNumber();
+            checkWithdrawalForm();
+        }
+
+        function validateCardNumber() {
+            const cardNumber = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+            const cardError = document.getElementById('cardError');
+            
+            if (cardNumber.length === 16 && /^4/.test(cardNumber)) {
+                cardError.style.display = 'none';
+                document.getElementById('cardNumber').classList.remove('error');
+                return true;
+            } else {
+                cardError.style.display = 'block';
+                document.getElementById('cardNumber').classList.add('error');
+                return false;
+            }
+        }
+
+        function formatExpiry(input) {
+            let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            
+            input.value = value;
+            updateCardPreview();
+            validateExpiry();
+            checkWithdrawalForm();
+        }
+
+        function validateExpiry() {
+            const expiry = document.getElementById('cardExpiry').value;
+            const expiryError = document.getElementById('expiryError');
+            const [month, year] = expiry.split('/');
+            
+            if (month && year && month.length === 2 && year.length === 2) {
+                const monthNum = parseInt(month);
+                const yearNum = parseInt(year);
+                
+                if (monthNum >= 1 && monthNum <= 12 && yearNum >= 23) {
+                    expiryError.style.display = 'none';
+                    document.getElementById('cardExpiry').classList.remove('error');
+                    return true;
+                }
+            }
+            
+            expiryError.style.display = 'block';
+            document.getElementById('cardExpiry').classList.add('error');
+            return false;
+        }
+
+        function validateCvv(input) {
+            const cvv = input.value;
+            const cvvError = document.getElementById('cvvError');
+            
+            if (cvv.length === 3 && /^\d+$/.test(cvv)) {
+                cvvError.style.display = 'none';
+                input.classList.remove('error');
+                return true;
+            } else {
+                cvvError.style.display = 'block';
+                input.classList.add('error');
+                return false;
+            }
+        }
+
+        function validateWithdrawalAmount() {
+            const amount = parseInt(document.getElementById('withdrawAmount').value) || 0;
+            const amountError = document.getElementById('amountError');
+            
+            if (amount >= 100000) {
+                amountError.style.display = 'none';
+                document.getElementById('withdrawAmount').classList.remove('error');
+                return true;
+            } else {
+                amountError.style.display = 'block';
+                document.getElementById('withdrawAmount').classList.add('error');
+                return false;
+            }
+        }
+
+        function updateCardPreview() {
+            const cardNumber = document.getElementById('cardNumber').value;
+            const cardName = document.getElementById('cardName').value;
+            const cardExpiry = document.getElementById('cardExpiry').value;
+            
+            document.getElementById('cardPreview').textContent = cardNumber || '**** **** **** ****';
+            document.getElementById('namePreview').textContent = cardName || 'YOUR NAME';
+            document.getElementById('expiryPreview').textContent = cardExpiry || 'MM/YY';
+        }
+
+        function checkWithdrawalForm() {
+            const isCardValid = validateCardNumber();
+            const isExpiryValid = validateExpiry();
+            const isCvvValid = document.getElementById('cardCvv').value.length === 3;
+            const isAmountValid = validateWithdrawalAmount();
+            const hasName = document.getElementById('cardName').value.trim().length > 0;
+            
+            if (isCardValid && isExpiryValid && isCvvValid && isAmountValid && hasName) {
+                withdrawBtn.disabled = false;
+            } else {
+                withdrawBtn.disabled = true;
+            }
+        }
+
+        // Process withdrawal
+        function processWithdrawal() {
+            const withdrawAmount = parseInt(document.getElementById('withdrawAmount').value) || 0;
+            
+            if (withdrawAmount < 100000) {
+                showToast('Minimum withdrawal is 100,000 AMD');
+                return;
+            }
+            
+            if (withdrawAmount > userData.balance) {
+                showToast('Insufficient AMD balance');
+                return;
+            }
+            
+            // Show processing message
+            showToast('Processing withdrawal to your Visa card...');
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                userData.balance -= withdrawAmount;
+                updateUI();
+                saveUserData();
+                
+                // Reset form
+                document.getElementById('cardNumber').value = '';
+                document.getElementById('cardName').value = '';
+                document.getElementById('cardExpiry').value = '';
+                document.getElementById('cardCvv').value = '';
+                document.getElementById('withdrawAmount').value = '';
+                updateCardPreview();
+                checkWithdrawalForm();
+                
+                showToast(`Success! ${withdrawAmount.toLocaleString()} AMD will be transferred to your Visa card within 3-5 business days.`);
+            }, 3000);
+        }
+
+        // Update UI with user data
+        function updateUI() {
+            document.getElementById('balanceAmount').textContent = userData.balance.toLocaleString();
+            document.getElementById('adsWatched').textContent = userData.adsWatchedToday;
+            document.getElementById('referralsCount').textContent = userData.referrals;
+            document.getElementById('totalEarned').textContent = userData.totalEarned.toLocaleString() + ' AMD';
+            
+            document.getElementById('referralLink').textContent = userData.referralLink;
+            document.getElementById('referralFriends').textContent = userData.referrals;
+            document.getElementById('referralPoints').textContent = (userData.referrals * 100).toLocaleString() + ' AMD';
+            document.getElementById('referralEarned').textContent = (userData.referrals * 100).toLocaleString() + ' AMD';
+            
+            // Update daily progress
+            const progressPercentage = (userData.adsWatchedToday / 10) * 100;
+            document.getElementById('dailyProgress').textContent = `${userData.adsWatchedToday}/10 ads watched`;
+            document.getElementById('progressFillBar').style.width = `${progressPercentage}%`;
+            document.getElementById('progressText').textContent = 
+                userData.adsWatchedToday >= 10 ? 
+                'Daily limit reached! Come back tomorrow.' : 
+                'Watch ads to earn AMD. Daily limit: 10 ads';
+
+            // Show welcome bonus for new users who haven't claimed it
+            if (!userData.welcomeBonusClaimed && userData.totalEarned === 0) {
+                document.getElementById('welcomeBonus').style.display = 'block';
+            } else {
+                document.getElementById('welcomeBonus').style.display = 'none';
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            renderAds();
+            
+            // Add event listeners for form validation
+            document.getElementById('cardNumber').addEventListener('input', checkWithdrawalForm);
+            document.getElementById('cardName').addEventListener('input', checkWithdrawalForm);
+            document.getElementById('cardExpiry').addEventListener('input', checkWithdrawalForm);
+            document.getElementById('cardCvv').addEventListener('input', checkWithdrawalForm);
+            document.getElementById('withdrawAmount').addEventListener('input', checkWithdrawalForm);
+            
+            // Add animations
+            const elements = document.querySelectorAll('.ad-card');
+            elements.forEach((el, index) => {
+                el.style.animationDelay = (index * 0.1) + 's';
+                el.classList.add('slide-in');
+            });
+            
+            // Initialize Monetag ads
+            setTimeout(loadMonetagNativeAds, 1000);
+        });
+    </script>
+</body>
+</html>
