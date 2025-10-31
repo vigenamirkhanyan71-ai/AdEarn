@@ -771,7 +771,7 @@
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFillBar"></div>
                     </div>
-                    <div class="progress-text" id="progressText">Դիտեք գովազդներ դրամ ստանալու համար: Օրական սահմանաչափ՝ 10 գովազդ</div>
+                    <div class="progress-text" id="progressText">Դիտեք գովազդներ դրամ ստանալու համար: Յուրաքանչյուր գովազդ կարելի է դիտել օրական մեկ անգամ</div>
                 </div>
                 
                 <!-- Ads Grid -->
@@ -960,7 +960,8 @@
             referralLink: "",
             memberSince: new Date().toISOString().split('T')[0],
             welcomeBonusClaimed: false,
-            referredUsers: [] // Array to store referred users with their Telegram usernames
+            referredUsers: [], // Array to store referred users with their Telegram usernames
+            todayWatchedAds: [] // Array to store which ads were watched today
         };
 
         // Load user data from localStorage
@@ -974,6 +975,7 @@
                 // Reset daily ads if it's a new day
                 if (userData.lastAdDate !== today) {
                     userData.adsWatchedToday = 0;
+                    userData.todayWatchedAds = [];
                     userData.lastAdDate = today;
                     saveUserData();
                 }
@@ -985,6 +987,7 @@
                 }
                 userData.referralLink = `https://t.me/AdEarnBot?start=ref${userId}`;
                 userData.lastAdDate = today;
+                userData.todayWatchedAds = [];
                 saveUserData();
             }
             updateUI();
@@ -1096,13 +1099,14 @@
 
         // Monetag.com Integration Functions
         function showMonetagAd(adId) {
-            if (userData.adsWatchedToday >= 10) {
-                showToast('Օրական գովազդների սահմանաչափը լրացված է։ Վերադարձեք վաղը։');
-                return;
-            }
-
             const ad = ads.find(a => a.id === adId);
             if (!ad) return;
+
+            // Check if ad was already watched today
+            if (userData.todayWatchedAds.includes(adId)) {
+                showToast('Այս գովազդն արդեն դիտել եք այսօր։ Վերադարձեք վաղը։');
+                return;
+            }
 
             // Show loading message
             showToast('Գովազդը բեռնվում է... Խնդրում ենք սպասել։');
@@ -1150,9 +1154,14 @@
             userData.adsWatched += 1;
             userData.adsWatchedToday += 1;
             userData.totalEarned += ad.reward;
+            
+            // Mark ad as watched today
+            if (!userData.todayWatchedAds.includes(adId)) {
+                userData.todayWatchedAds.push(adId);
+            }
+            
             updateUI();
             saveUserData();
-        
 
             // Mark ad as completed
             const adElement = document.getElementById(`ad-${adId}`);
@@ -1170,7 +1179,7 @@
         function renderAds() {
             adsGrid.innerHTML = '';
             ads.forEach(ad => {
-                const isCompleted = userData.adsWatchedToday >= 10;
+                const isCompleted = userData.todayWatchedAds.includes(ad.id);
                 const adCard = document.createElement('div');
                 adCard.className = `ad-card ${isCompleted ? 'disabled' : ''}`;
                 adCard.id = `ad-${ad.id}`;
@@ -1366,13 +1375,13 @@
             document.getElementById('referralEarned').textContent = (userData.referrals * 1000).toLocaleString() + ' Դրամ';
             
             // Update daily progress
-            const progressPercentage = (userData.adsWatchedToday / 10) * 100;
-            document.getElementById('dailyProgress').textContent = `${userData.adsWatchedToday}/10 գովազդ դիտված`;
+            const progressPercentage = (userData.todayWatchedAds.length / 10) * 100;
+            document.getElementById('dailyProgress').textContent = `${userData.todayWatchedAds.length}/10 գովազդ դիտված`;
             document.getElementById('progressFillBar').style.width = `${progressPercentage}%`;
             document.getElementById('progressText').textContent = 
-                userData.adsWatchedToday >= 10 ? 
-                'Օրական սահմանաչափը լրացված է։ Վերադարձեք վաղը։' : 
-                'Դիտեք գովազդներ դրամ ստանալու համար։ Օրական սահմանաչափ՝ 10 գովազդ';
+                userData.todayWatchedAds.length >= 10 ? 
+                'Բոլոր գովազդները դիտված են այսօր։ Վերադարձեք վաղը։' : 
+                'Դիտեք գովազդներ դրամ ստանալու համար։ Յուրաքանչյուր գովազդ կարելի է դիտել օրական մեկ անգամ';
 
             // Show welcome bonus for new users who haven't claimed it
             if (!userData.welcomeBonusClaimed && userData.totalEarned === 0) {
@@ -1380,6 +1389,9 @@
             } else {
                 document.getElementById('welcomeBonus').style.display = 'none';
             }
+            
+            // Re-render ads to update their status
+            renderAds();
         }
 
         // Initialize the app
@@ -1403,7 +1415,3 @@
     </script>
 </body>
 </html>
-
-
-
-
