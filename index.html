@@ -951,26 +951,27 @@
         
         // User data with localStorage persistence
         let userData = {
-            balance: 0, // In AMD
+            balance: 0,
             adsWatched: 0,
             adsWatchedToday: 0,
             lastAdDate: null,
             referrals: 0,
-            totalEarned: 0, // In AMD
+            totalEarned: 0,
             referralLink: "",
             memberSince: new Date().toISOString().split('T')[0],
             welcomeBonusClaimed: false,
-            referredUsers: [], // Array to store referred users with their Telegram usernames
-            todayWatchedAds: [] // Array to store which ads were watched today
+            referredUsers: [],
+            todayWatchedAds: []
         };
 
         // Load user data from localStorage
         function loadUserData() {
             const saved = localStorage.getItem('adEarnUserData');
-            const today = new Date().toDateString();
+            const today = new Date().toLocaleDateString('hy-AM');
             
             if (saved) {
-                userData = {...userData, ...JSON.parse(saved)};
+                const parsedData = JSON.parse(saved);
+                userData = {...userData, ...parsedData};
                 
                 // Reset daily ads if it's a new day
                 if (userData.lastAdDate !== today) {
@@ -985,7 +986,8 @@
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     userId = tg.initDataUnsafe.user.id || "user";
                 }
-                userData.referralLink = `https://t.me/AdEarnBot?start=ref${userId}`;
+                // ՈՒՂՂՎԱԾ ՀՂՈՒՄ՝ Օգտագործելով ձեր բոտի username-ը
+                userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
                 userData.lastAdDate = today;
                 userData.todayWatchedAds = [];
                 saveUserData();
@@ -1028,23 +1030,18 @@
 
         // Switch tabs
         function switchTab(tab) {
-            // Hide all sections
             document.getElementById('ads-section').style.display = 'none';
             document.getElementById('referrals-section').style.display = 'none';
             document.getElementById('withdraw-section').style.display = 'none';
             
-            // Remove active class from all footer tabs
             document.querySelectorAll('.footer-tab').forEach(t => t.classList.remove('active'));
             
-            // Show selected section
             document.getElementById(`${tab}-section`).style.display = 'block';
             
-            // Activate corresponding footer tab
             document.querySelectorAll(`.footer-tab[onclick="switchTab('${tab}')"]`).forEach(t => {
                 t.classList.add('active');
             });
 
-            // Update referrals list when switching to referrals tab
             if (tab === 'referrals') {
                 updateReferralsList();
             }
@@ -1062,11 +1059,10 @@
                 ).join('<br>');
             } else {
                 referralsList.style.display = 'none';
-                referralsListContent.innerHTML = 'Դուք դեռ չեք ուղղորդել ոչ մի ընկերի';
             }
         }
 
-        // Simulate adding a referred user (this would normally come from Telegram)
+        // Add referred user
         function addReferredUser(username) {
             if (!userData.referredUsers.some(user => user.username === username)) {
                 userData.referredUsers.push({
@@ -1074,7 +1070,7 @@
                     date: new Date().toLocaleDateString('hy-AM')
                 });
                 userData.referrals = userData.referredUsers.length;
-                userData.balance += 1000; // Add 1000 AMD for each referral
+                userData.balance += 1000;
                 userData.totalEarned += 1000;
                 saveUserData();
                 updateUI();
@@ -1097,7 +1093,7 @@
             }
         }
 
-        // Monetag.com Integration Functions
+        // Show Monetag ad
         function showMonetagAd(adId) {
             const ad = ads.find(a => a.id === adId);
             if (!ad) return;
@@ -1108,15 +1104,12 @@
                 return;
             }
 
-            // Show loading message
             showToast('Գովազդը բեռնվում է... Խնդրում ենք սպասել։');
 
             // Use Rewarded interstitial for ads 1, 4, 5, 8, 9
             if ([1, 4, 5, 8, 9].includes(adId)) {
-                // Monetag Rewarded Interstitial ad
                 if (typeof show_10120830 !== 'undefined') {
                     show_10120830().then(() => {
-                        // User watched the ad - credit the reward
                         creditUserForAd(adId);
                         showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
                     }).catch((error) => {
@@ -1129,10 +1122,8 @@
             }
             // Use Rewarded Popup for ads 2, 3, 6, 7, 10
             else if ([2, 3, 6, 7, 10].includes(adId)) {
-                // Monetag Rewarded Popup ad
                 if (typeof show_10120830 !== 'undefined') {
                     show_10120830('pop').then(() => {
-                        // User watched the ad - credit the reward
                         creditUserForAd(adId);
                         showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
                     }).catch((error) => {
@@ -1145,7 +1136,7 @@
             }
         }
 
-        // Helper function to credit user after ad completion
+        // Credit user after ad completion
         function creditUserForAd(adId) {
             const ad = ads.find(a => a.id === adId);
             if (!ad) return;
@@ -1163,7 +1154,7 @@
             updateUI();
             saveUserData();
 
-            // Mark ad as completed
+            // Mark ad as completed in UI
             const adElement = document.getElementById(`ad-${adId}`);
             const adAction = document.getElementById(`ad-action-${adId}`);
             
@@ -1341,16 +1332,13 @@
                 return;
             }
             
-            // Show processing message
             showToast('Դուրս գրումը մշակվում է ձեր Visa քարտին...');
             
-            // Simulate processing delay
             setTimeout(() => {
                 userData.balance -= withdrawAmount;
                 updateUI();
                 saveUserData();
                 
-                // Reset form
                 document.getElementById('cardNumber').value = '';
                 document.getElementById('cardName').value = '';
                 document.getElementById('cardExpiry').value = '';
@@ -1389,9 +1377,6 @@
             } else {
                 document.getElementById('welcomeBonus').style.display = 'none';
             }
-            
-            // Re-render ads to update their status
-            renderAds();
         }
 
         // Initialize the app
@@ -1399,13 +1384,11 @@
             loadUserData();
             renderAds();
             
-            // Add event listeners for form validation
             document.getElementById('cardNumber').addEventListener('input', checkWithdrawalForm);
             document.getElementById('cardName').addEventListener('input', checkWithdrawalForm);
             document.getElementById('cardExpiry').addEventListener('input', checkWithdrawalForm);
             document.getElementById('withdrawAmount').addEventListener('input', checkWithdrawalForm);
             
-            // Add animations
             const elements = document.querySelectorAll('.ad-card');
             elements.forEach((el, index) => {
                 el.style.animationDelay = (index * 0.1) + 's';
