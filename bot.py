@@ -10,7 +10,7 @@ logging.basicConfig(
 )
 
 BOT_TOKEN = "8442849276:AAEYYKmjanCKSjjB16XUaEny5OOnpCfRamo"
-MINI_APP_URL = "https://vigenamirkhanyan71-ai.github.io/AdEarn/"
+MINI_APP_URL = " https://vigenamirkhanyan71-ai.github.io/AdEarn/"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
@@ -48,4 +48,5 @@ def main():
     application.run_polling()
 
 if __name__ == '__main__':
+
     main()
