@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src='//libtl.com/sdk.js' data-zone='10120830' data-sdk='show_10120830'></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VideoEarn Pro - Watch Ads & Earn AMD</title>
@@ -1027,19 +1028,19 @@
         }
 
         // Ads data - 10 ads per day, total 6500 AMD
-        const ads = [
-            { id: 1, title: "Ad 1", reward: 600, duration: "30s", icon: "ad" },
-            { id: 2, title: "Ad 2", reward: 620, duration: "25s", icon: "ad" },
-            { id: 3, title: "Ad 3", reward: 640, duration: "20s", icon: "ad" },
-            { id: 4, title: "Ad 4", reward: 660, duration: "35s", icon: "ad" },
-            { id: 5, title: "Ad 5", reward: 680, duration: "30s", icon: "ad" },
-            { id: 6, title: "Ad 6", reward: 700, duration: "40s", icon: "ad" },
-            { id: 7, title: "Ad 7", reward: 720, duration: "25s", icon: "ad" },
-            { id: 8, title: "Ad 8", reward: 740, duration: "30s", icon: "ad" },
-            { id: 9, title: "Ad 9", reward: 760, duration: "35s", icon: "ad" },
-            { id: 10, title: "Ad 10", reward: 780, duration: "45s", icon: "ad" }
-        ];
-
+   // Ads data - 10 ads per day, total 6500 AMD + Monetag bonus
+const ads = [
+    { id: 1, title: "Ad 1", reward: 600, duration: "30s", icon: "ad" },
+    { id: 2, title: "Ad 2", reward: 620, duration: "25s", icon: "ad" },
+    { id: 3, title: "Ad 3", reward: 640, duration: "20s", icon: "ad" },
+    { id: 4, title: "Ad 4", reward: 660, duration: "35s", icon: "ad" },
+    { id: 5, title: "Monetag Bonus", reward: 1000, duration: "45s", icon: "ad", type: "monetag" },
+    { id: 6, title: "Ad 6", reward: 700, duration: "40s", icon: "ad" },
+    { id: 7, title: "Ad 7", reward: 720, duration: "25s", icon: "ad" },
+    { id: 8, title: "Ad 8", reward: 740, duration: "30s", icon: "ad" },
+    { id: 9, title: "Ad 9", reward: 760, duration: "35s", icon: "ad" },
+    { id: 10, title: "Ad 10", reward: 780, duration: "45s", icon: "ad" }
+];
         // DOM Elements
         const toast = document.getElementById('toast');
         const adsGrid = document.getElementById('adsGrid');
@@ -1092,47 +1093,84 @@
         }
 
         // Monetag.com Integration Functions
-        function showMonetagAd(adId) {
-            if (userData.adsWatchedToday >= 10) {
-                showToast('Daily ad limit reached! Come back tomorrow.');
-                return;
-            }
+        // Monetag.com Integration Functions
+function showMonetagAd(adId) {
+    if (userData.adsWatchedToday >= 10) {
+        showToast('Daily ad limit reached! Come back tomorrow.');
+        return;
+    }
 
-            if (typeof monetag !== 'undefined') {
-                monetag('send', 'event', 'ad_watch_triggered');
-                showToast('Ad loading... Please wait!');
+    const ad = ads.find(a => a.id === adId);
+    
+    // Check if this is a Monetag ad
+    if (ad.type === "monetag") {
+        showToast('Loading Monetag ad... Please wait!');
+        
+        // Use Monetag rewarded interstitial
+        if (typeof show_10120830 !== 'undefined') {
+            show_10120830().then(() => {
+                // Ad completed successfully - reward user
+                userData.balance += ad.reward;
+                userData.adsWatched += 1;
+                userData.adsWatchedToday += 1;
+                userData.totalEarned += ad.reward;
+                updateUI();
+                saveUserData();
                 
-                // Simulate ad watching with progress
-                let progress = 0;
-                const ad = ads.find(a => a.id === adId);
-                const progressInterval = setInterval(() => {
-                    progress += 10;
-                    showToast(`Watching ad... ${progress}%`);
-                    
-                    if (progress >= 100) {
-                        clearInterval(progressInterval);
-                        
-                        // Credit user after ad completion (in AMD)
-                        userData.balance += ad.reward;
-                        userData.adsWatched += 1;
-                        userData.adsWatchedToday += 1;
-                        userData.totalEarned += ad.reward;
-                        updateUI();
-                        saveUserData();
-                        
-                        // Mark ad as completed
-                        document.getElementById(`ad-${adId}`).classList.add('disabled');
-                        document.getElementById(`ad-action-${adId}`).textContent = 'Completed';
-                        document.getElementById(`ad-action-${adId}`).classList.add('completed');
-                        document.getElementById(`ad-action-${adId}`).disabled = true;
-                        
-                        showToast(`Ad completed! You earned ${ad.reward} AMD!`);
-                    }
-                }, 300);
-            } else {
-                showToast('Ad network not loaded. Please try again.');
-            }
+                // Mark ad as completed
+                document.getElementById(`ad-${adId}`).classList.add('disabled');
+                document.getElementById(`ad-action-${adId}`).textContent = 'Completed';
+                document.getElementById(`ad-action-${adId}`).classList.add('completed');
+                document.getElementById(`ad-action-${adId}`).disabled = true;
+                
+                showToast(`Monetag ad completed! You earned ${ad.reward} AMD!`);
+                
+                // You can add your custom reward logic here
+                alert('You have seen an ad! Reward: ' + ad.reward + ' AMD');
+            }).catch((error) => {
+                console.error('Monetag ad failed:', error);
+                showToast('Ad failed to load. Please try again.');
+            });
+        } else {
+            showToast('Ad network not loaded. Please try again.');
         }
+    } else {
+        // Regular ad logic (your existing code)
+        if (typeof monetag !== 'undefined') {
+            monetag('send', 'event', 'ad_watch_triggered');
+            showToast('Ad loading... Please wait!');
+            
+            // Simulate ad watching with progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 10;
+                showToast(`Watching ad... ${progress}%`);
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    
+                    // Credit user after ad completion (in AMD)
+                    userData.balance += ad.reward;
+                    userData.adsWatched += 1;
+                    userData.adsWatchedToday += 1;
+                    userData.totalEarned += ad.reward;
+                    updateUI();
+                    saveUserData();
+                    
+                    // Mark ad as completed
+                    document.getElementById(`ad-${adId}`).classList.add('disabled');
+                    document.getElementById(`ad-action-${adId}`).textContent = 'Completed';
+                    document.getElementById(`ad-action-${adId}`).classList.add('completed');
+                    document.getElementById(`ad-action-${adId}`).disabled = true;
+                    
+                    showToast(`Ad completed! You earned ${ad.reward} AMD!`);
+                }
+            }, 300);
+        } else {
+            showToast('Ad network not loaded. Please try again.');
+        }
+    }
+}
 
         function loadMonetagNativeAds() {
             if (typeof monetag !== 'undefined') {
