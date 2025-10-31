@@ -971,43 +971,53 @@
         };
 
         // Load user data from localStorage
-        function loadUserData() {
-            const saved = localStorage.getItem('adEarnUserData');
-            const today = new Date().toLocaleDateString('hy-AM');
-            
-            if (saved) {
-                const parsedData = JSON.parse(saved);
-                userData = {...userData, ...parsedData};
-                
-                // Reset daily ads if it's a new day
-                if (userData.lastAdDate !== today) {
-                    userData.adsWatchedToday = 0;
-                    userData.todayWatchedAds = [];
-                    userData.lastAdDate = today;
-                    saveUserData();
-                }
-            } else {
-                // Generate referral link with Telegram user data if available
-                let userId = "user";
-                let userName = "Օգտատեր";
-                
-                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                    userId = tg.initDataUnsafe.user.id || "user";
-                    userName = tg.initDataUnsafe.user.first_name || "Օգտատեր";
-                }
-                
-                // Set user name
-                document.getElementById('userName').textContent = userName;
-                
-                // Set referral link
-                userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
-                userData.lastAdDate = today;
-                userData.todayWatchedAds = [];
-                saveUserData();
-            }
-            updateUI();
+// Load user data from localStorage
+function loadUserData() {
+    const saved = localStorage.getItem('adEarnUserData');
+    const today = new Date().toLocaleDateString('hy-AM');
+    
+    if (saved) {
+        const parsedData = JSON.parse(saved);
+        userData = {...userData, ...parsedData};
+        
+        // Reset daily ads if it's a new day
+        if (userData.lastAdDate !== today) {
+            userData.adsWatchedToday = 0;
+            userData.todayWatchedAds = [];
+            userData.lastAdDate = today;
         }
-
+        
+        // Update referral link if it's the old one
+        if (userData.referralLink.includes('AdEarnBot')) {
+            let userId = "user";
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                userId = tg.initDataUnsafe.user.id || "user";
+            }
+            userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
+        }
+        
+        saveUserData();
+    } else {
+        // Generate referral link with Telegram user data if available
+        let userId = "user";
+        let userName = "Օգտատեր";
+        
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            userId = tg.initDataUnsafe.user.id || "user";
+            userName = tg.initDataUnsafe.user.first_name || "Օգտատեր";
+        }
+        
+        // Set user name
+        document.getElementById('userName').textContent = userName;
+        
+        // Set referral link
+        userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
+        userData.lastAdDate = today;
+        userData.todayWatchedAds = [];
+        saveUserData();
+    }
+    updateUI();
+}
         // Save user data to localStorage
         function saveUserData() {
             localStorage.setItem('adEarnUserData', JSON.stringify(userData));
@@ -1441,3 +1451,4 @@
     </script>
 </body>
 </html>
+
