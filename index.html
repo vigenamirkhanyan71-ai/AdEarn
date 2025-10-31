@@ -838,6 +838,22 @@
                         <!-- Referrals will be listed here -->
                     </div>
                 </div>
+
+                <!-- Share Buttons -->
+                <div class="referral-info">
+                    <div class="info-title">
+                        <i class="fas fa-share-alt"></i>
+                        Կիսվել Հղումով
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="copy-btn" onclick="shareToTelegram()" style="flex: 1;">
+                            <i class="fab fa-telegram"></i> Telegram
+                        </button>
+                        <button class="copy-btn" onclick="shareToWhatsApp()" style="flex: 1;">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Withdraw Section -->
@@ -955,6 +971,9 @@
         tg.expand();
         tg.enableClosingConfirmation();
         
+        // Global referral database simulation
+        let referralDatabase = JSON.parse(localStorage.getItem('adEarnReferralDatabase')) || {};
+        
         // User data with localStorage persistence
         let userData = {
             balance: 0,
@@ -969,7 +988,8 @@
             referredUsers: [],
             todayWatchedAds: [],
             userId: null,
-            username: "Օգտատեր"
+            username: "Օգտատեր",
+            referredBy: null
         };
 
         // Load user data from localStorage
@@ -978,15 +998,24 @@
             const today = new Date().toLocaleDateString('hy-AM');
             
             // Get user info from Telegram
-            let userId = "user_" + Math.random().toString(36).substr(2, 9);
-            let userName = "Օգտատեր";
+            let userId, userName;
             
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                userId = tg.initDataUnsafe.user.id || userId;
-                userName = tg.initDataUnsafe.user.first_name || userName;
+                userId = tg.initDataUnsafe.user.id.toString();
+                userName = tg.initDataUnsafe.user.first_name || "Օգտատեր";
                 if (tg.initDataUnsafe.user.username) {
                     userName = "@" + tg.initDataUnsafe.user.username;
                 }
+            } else {
+                userId = "user_" + Math.random().toString(36).substr(2, 9);
+                userName = "Օգտատեր";
+            }
+            
+            // Check for referral parameter in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+            if (refParam && refParam !== userId) {
+                userData.referredBy = refParam;
             }
             
             if (saved) {
@@ -995,11 +1024,27 @@
                 // Check if we have data for this specific user
                 if (parsedData.userId === userId) {
                     userData = {...userData, ...parsedData};
+                    
+                    // Update referral if not set but we have ref param
+                    if (!userData.referredBy && refParam && refParam !== userId) {
+                        userData.referredBy = refParam;
+                    }
                 } else {
                     // New user - initialize with their data
                     userData.userId = userId;
                     userData.username = userName;
                     userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
+                    
+                    // Add to referral database
+                    if (!referralDatabase[userId]) {
+                        referralDatabase[userId] = {
+                            username: userName,
+                            joinDate: new Date().toISOString(),
+                            referredBy: refParam,
+                            referrals: [],
+                            earnings: 0
+                        };
+                    }
                 }
                 
                 // Reset daily ads if it's a new day
@@ -1017,12 +1062,108 @@
                 userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
                 userData.lastAdDate = today;
                 userData.todayWatchedAds = [];
+                
+                // Add to referral database
+                if (!referralDatabase[userId]) {
+                    referralDatabase[userId] = {
+                        username: userName,
+                        joinDate: new Date().toISOString(),
+                        referredBy: refParam,
+                        referrals: [],
+                        earnings: 0
+                    };
+                }
+                
                 saveUserData();
+            }
+            
+            // Process referral if user was referred by someone
+            if (userData.referredBy && !userData.welcomeBonusClaimed) {
+                processReferralBonus(userData.referredBy, userId, userName);
             }
             
             // Set user name in UI
             document.getElementById('userName').textContent = userData.username;
+            updateReferralDatabase();
             updateUI();
+        }
+
+        // Process referral bonus
+        function processReferralBonus(referrerId, referredUserId, referredUserName) {
+            if (referralDatabase[referrerId]) {
+                // Check if this user was already referred
+                const alreadyReferred = referralDatabase[referrerId].referrals.some(
+                    ref => ref.userId === referredUserId
+                );
+                
+                if (!alreadyReferred) {
+                    // Add to referrer's referrals
+                    referralDatabase[referrerId].referrals.push({
+                        userId: referredUserId,
+                        username: referredUserName,
+                        date: new Date().toLocaleDateString('hy-AM'),
+                        bonusPaid: false
+                    });
+                    
+                    // Give bonus to current user (referred user)
+                    if (!userData.welcomeBonusClaimed) {
+                        userData.balance += 7000;
+                        userData.totalEarned += 7000;
+                        userData.welcomeBonusClaimed = true;
+                        showToast('🎉 Ստացաք 7000 Դրամ բոնուս ուղղորդման համար!');
+                    }
+                    
+                    updateReferralDatabase();
+                    saveUserData();
+                    updateUI();
+                }
+            }
+        }
+
+        // Update referral database
+        function updateReferralDatabase() {
+            // Update current user's data in database
+            if (referralDatabase[userData.userId]) {
+                referralDatabase[userData.userId].username = userData.username;
+                referralDatabase[userData.userId].earnings = userData.totalEarned;
+            }
+            
+            // Check for referral bonuses to claim
+            if (referralDatabase[userData.userId]) {
+                const userRefs = referralDatabase[userData.userId].referrals;
+                let newReferrals = 0;
+                
+                userRefs.forEach(ref => {
+                    if (!ref.bonusPaid) {
+                        ref.bonusPaid = true;
+                        newReferrals++;
+                    }
+                });
+                
+                if (newReferrals > 0) {
+                    const bonusAmount = newReferrals * 1000;
+                    userData.balance += bonusAmount;
+                    userData.referrals += newReferrals;
+                    userData.totalEarned += bonusAmount;
+                    
+                    // Add to referred users list for display
+                    userRefs.forEach(ref => {
+                        if (!userData.referredUsers.some(u => u.userId === ref.userId)) {
+                            userData.referredUsers.push({
+                                username: ref.username,
+                                date: ref.date,
+                                userId: ref.userId
+                            });
+                        }
+                    });
+                    
+                    showToast(`🎉 Ստացաք ${bonusAmount.toLocaleString()} Դրամ ${newReferrals} ուղղորդման համար!`);
+                    saveUserData();
+                    updateUI();
+                }
+            }
+            
+            localStorage.setItem('adEarnReferralDatabase', JSON.stringify(referralDatabase));
         }
 
         // Save user data to localStorage
@@ -1074,6 +1215,7 @@
 
             if (tab === 'referrals') {
                 updateReferralsList();
+                updateReferralDatabase();
             }
         }
 
@@ -1089,24 +1231,22 @@
                 ).join('<br>');
             } else {
                 referralsList.style.display = 'none';
+                referralsListContent.innerHTML = 'Դեռ ուղղորդումներ չունեք։ Կիսվեք ձեր հղումով ընկերների հետ։';
             }
         }
 
-        // Add referred user (for testing - in real app this would come from backend)
-        function addReferredUser(username) {
-            if (!userData.referredUsers.some(user => user.username === username)) {
-                userData.referredUsers.push({
-                    username: username,
-                    date: new Date().toLocaleDateString('hy-AM')
-                });
-                userData.referrals = userData.referredUsers.length;
-                userData.balance += 1000;
-                userData.totalEarned += 1000;
-                saveUserData();
-                updateUI();
-                updateReferralsList();
-                showToast(`Շնորհավորում ենք։ Դուք ստացաք 1000 Դրամ ${username}-ի ուղղորդման համար։`);
-            }
+        // Share to Telegram
+        function shareToTelegram() {
+            const message = `Դիտեք գովազդներ և ստացեք դրամ AdEarn-ում։ Միացեք հիմա՝ ${userData.referralLink}`;
+            const url = `https://t.me/share/url?url=${encodeURIComponent(userData.referralLink)}&text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        // Share to WhatsApp
+        function shareToWhatsApp() {
+            const message = `Դիտեք գովազդներ և ստացեք դրամ AdEarn-ում։ Միացեք հիմա՝ ${userData.referralLink}`;
+            const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
         }
 
         // Claim welcome bonus
@@ -1455,10 +1595,22 @@
                 el.classList.add('slide-in');
             });
 
-            // For testing - simulate some referrals
+            // Add some demo referrals for testing
             setTimeout(() => {
-                if (userData.referredUsers.length === 0 && Math.random() > 0.7) {
-                    addReferredUser("Ընկեր1");
+                if (userData.referredUsers.length === 0 && Math.random() > 0.5) {
+                    // Simulate a referral coming in
+                    const demoUsers = ["Ընկեր1", "Ընկեր2", "Ընկեր3"];
+                    const randomUser = demoUsers[Math.floor(Math.random() * demoUsers.length)];
+                    
+                    if (referralDatabase[userData.userId]) {
+                        referralDatabase[userData.userId].referrals.push({
+                            userId: "demo_" + Math.random().toString(36).substr(2, 5),
+                            username: randomUser,
+                            date: new Date().toLocaleDateString('hy-AM'),
+                            bonusPaid: false
+                        });
+                        updateReferralDatabase();
+                    }
                 }
             }, 2000);
         });
