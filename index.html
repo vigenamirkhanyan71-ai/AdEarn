@@ -967,57 +967,64 @@
             memberSince: new Date().toISOString().split('T')[0],
             welcomeBonusClaimed: false,
             referredUsers: [],
-            todayWatchedAds: []
+            todayWatchedAds: [],
+            userId: null,
+            username: "Օգտատեր"
         };
 
         // Load user data from localStorage
-// Load user data from localStorage
-function loadUserData() {
-    const saved = localStorage.getItem('adEarnUserData');
-    const today = new Date().toLocaleDateString('hy-AM');
-    
-    if (saved) {
-        const parsedData = JSON.parse(saved);
-        userData = {...userData, ...parsedData};
-        
-        // Reset daily ads if it's a new day
-        if (userData.lastAdDate !== today) {
-            userData.adsWatchedToday = 0;
-            userData.todayWatchedAds = [];
-            userData.lastAdDate = today;
-        }
-        
-        // Update referral link if it's the old one
-        if (userData.referralLink.includes('AdEarnBot')) {
-            let userId = "user";
+        function loadUserData() {
+            const saved = localStorage.getItem('adEarnUserData');
+            const today = new Date().toLocaleDateString('hy-AM');
+            
+            // Get user info from Telegram
+            let userId = "user_" + Math.random().toString(36).substr(2, 9);
+            let userName = "Օգտատեր";
+            
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                userId = tg.initDataUnsafe.user.id || "user";
+                userId = tg.initDataUnsafe.user.id || userId;
+                userName = tg.initDataUnsafe.user.first_name || userName;
+                if (tg.initDataUnsafe.user.username) {
+                    userName = "@" + tg.initDataUnsafe.user.username;
+                }
             }
-            userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
+            
+            if (saved) {
+                const parsedData = JSON.parse(saved);
+                
+                // Check if we have data for this specific user
+                if (parsedData.userId === userId) {
+                    userData = {...userData, ...parsedData};
+                } else {
+                    // New user - initialize with their data
+                    userData.userId = userId;
+                    userData.username = userName;
+                    userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
+                }
+                
+                // Reset daily ads if it's a new day
+                if (userData.lastAdDate !== today) {
+                    userData.adsWatchedToday = 0;
+                    userData.todayWatchedAds = [];
+                    userData.lastAdDate = today;
+                }
+                
+                saveUserData();
+            } else {
+                // First time user
+                userData.userId = userId;
+                userData.username = userName;
+                userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
+                userData.lastAdDate = today;
+                userData.todayWatchedAds = [];
+                saveUserData();
+            }
+            
+            // Set user name in UI
+            document.getElementById('userName').textContent = userData.username;
+            updateUI();
         }
-        
-        saveUserData();
-    } else {
-        // Generate referral link with Telegram user data if available
-        let userId = "user";
-        let userName = "Օգտատեր";
-        
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            userId = tg.initDataUnsafe.user.id || "user";
-            userName = tg.initDataUnsafe.user.first_name || "Օգտատեր";
-        }
-        
-        // Set user name
-        document.getElementById('userName').textContent = userName;
-        
-        // Set referral link
-        userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
-        userData.lastAdDate = today;
-        userData.todayWatchedAds = [];
-        saveUserData();
-    }
-    updateUI();
-}
+
         // Save user data to localStorage
         function saveUserData() {
             localStorage.setItem('adEarnUserData', JSON.stringify(userData));
@@ -1078,14 +1085,14 @@ function loadUserData() {
             if (userData.referredUsers.length > 0) {
                 referralsList.style.display = 'block';
                 referralsListContent.innerHTML = userData.referredUsers.map((user, index) => 
-                    `${index + 1}. @${user.username} - ${user.date} - 1000 Դրամ`
+                    `${index + 1}. ${user.username} - ${user.date} - 1000 Դրամ`
                 ).join('<br>');
             } else {
                 referralsList.style.display = 'none';
             }
         }
 
-        // Add referred user
+        // Add referred user (for testing - in real app this would come from backend)
         function addReferredUser(username) {
             if (!userData.referredUsers.some(user => user.username === username)) {
                 userData.referredUsers.push({
@@ -1098,7 +1105,7 @@ function loadUserData() {
                 saveUserData();
                 updateUI();
                 updateReferralsList();
-                showToast(`Շնորհավորում ենք։ Դուք ստացաք 1000 Դրամ @${username}-ի ուղղորդման համար։`);
+                showToast(`Շնորհավորում ենք։ Դուք ստացաք 1000 Դրամ ${username}-ի ուղղորդման համար։`);
             }
         }
 
@@ -1447,8 +1454,14 @@ function loadUserData() {
                 el.style.animationDelay = (index * 0.1) + 's';
                 el.classList.add('slide-in');
             });
+
+            // For testing - simulate some referrals
+            setTimeout(() => {
+                if (userData.referredUsers.length === 0 && Math.random() > 0.7) {
+                    addReferredUser("Ընկեր1");
+                }
+            }, 2000);
         });
     </script>
 </body>
 </html>
-
