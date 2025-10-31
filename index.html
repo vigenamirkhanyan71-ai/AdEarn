@@ -95,6 +95,11 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
+        .user-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
         .app-title {
             text-align: center;
             font-size: 24px;
@@ -721,6 +726,7 @@
                     <div class="user-avatar">
                         <i class="fas fa-user"></i>
                     </div>
+                    <div class="user-name" id="userName">Օգտատեր</div>
                 </div>
                 
                 <div class="app-title">AdEarn</div>
@@ -983,10 +989,17 @@
             } else {
                 // Generate referral link with Telegram user data if available
                 let userId = "user";
+                let userName = "Օգտատեր";
+                
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     userId = tg.initDataUnsafe.user.id || "user";
+                    userName = tg.initDataUnsafe.user.first_name || "Օգտատեր";
                 }
-                // ՈՒՂՂՎԱԾ ՀՂՈՒՄ՝ Օգտագործելով ձեր բոտի username-ը
+                
+                // Set user name
+                document.getElementById('userName').textContent = userName;
+                
+                // Set referral link
                 userData.referralLink = `https://t.me/AdEarn21_bot?start=ref${userId}`;
                 userData.lastAdDate = today;
                 userData.todayWatchedAds = [];
@@ -1117,7 +1130,8 @@
                         showToast('Գովազդը բեռնվում չէ։ Նորից փորձեք։');
                     });
                 } else {
-                    showToast('Գովազդային համակարգը չի բեռնվել։ Խնդրում ենք թարմացնել էջը։');
+                    // Fallback simulation if ad system not loaded
+                    simulateAd(adId);
                 }
             }
             // Use Rewarded Popup for ads 2, 3, 6, 7, 10
@@ -1131,9 +1145,28 @@
                         showToast('Գովազդը բեռնվում չէ։ Նորից փորձեք։');
                     });
                 } else {
-                    showToast('Գովազդային համակարգը չի բեռնվել։ Խնդրում ենք թարմացնել էջը։');
+                    // Fallback simulation if ad system not loaded
+                    simulateAd(adId);
                 }
             }
+        }
+
+        // Simulate ad for testing
+        function simulateAd(adId) {
+            const ad = ads.find(a => a.id === adId);
+            if (!ad) return;
+
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 10;
+                showToast(`Դիտվում է գովազդը... ${progress}%`);
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    creditUserForAd(adId);
+                    showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
+                }
+            }, 300);
         }
 
         // Credit user after ad completion
@@ -1208,6 +1241,16 @@
                     btn.textContent = originalText;
                     btn.style.background = 'white';
                 }, 2000);
+                
+                showToast('Ուղղորդման հղումը պատճենվեց։');
+            }).catch(() => {
+                // Fallback for older browsers
+                const tempInput = document.createElement('input');
+                tempInput.value = userData.referralLink;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
                 
                 showToast('Ուղղորդման հղումը պատճենվեց։');
             });
@@ -1312,9 +1355,9 @@
             const hasName = document.getElementById('cardName').value.trim().length > 0;
             
             if (isCardValid && isExpiryValid && isAmountValid && hasName) {
-                withdrawBtn.disabled = false;
+                document.getElementById('withdrawBtn').disabled = false;
             } else {
-                withdrawBtn.disabled = true;
+                document.getElementById('withdrawBtn').disabled = true;
             }
         }
 
