@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="hy">
 <head>
  <script src='//libtl.com/sdk.js' data-zone='10120830' data-sdk='show_10120830'></script>
@@ -1103,77 +1103,86 @@
             }
         }
 
-        // Monetag.com Integration Functions
-       // Monetag.com Integration Functions
-function showMonetagAd(adId) {
-    if (userData.adsWatchedToday >= 10) {
-        showToast('Օրական գովազդների սահմանաչափը լրացված է։ Վերադարձեք վաղը։');
-        return;
-    }
+        // Monetag.com Integration Functions - Updated for all ads with different types
+        function showMonetagAd(adId) {
+            if (userData.adsWatchedToday >= 10) {
+                showToast('Օրական գովազդների սահմանաչափը լրացված է։ Վերադարձեք վաղը։');
+                return;
+            }
 
-    const ad = ads.find(a => a.id === adId);
-    if (!ad) return;
+            const ad = ads.find(a => a.id === adId);
+            if (!ad) return;
 
-    // Show loading message
-    showToast('Գովազդը բեռնվում է... Խնդրում ենք սպասել։');
+            // Show loading message
+            showToast('Գովազդը բեռնվում է... Խնդրում ենք սպասել։');
 
-    // Use the provided rewarded interstitial code for specific ads
-    if ([1, 4, 5, 8, 9].includes(adId)) {
-        // Monetag rewarded interstitial ad
-        show_10120830().then(() => {
-            // User watched the ad - credit the reward
-            creditUserForAd(adId);
-            showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
-        }).catch((error) => {
-            console.error('Ad failed to load:', error);
-            showToast('Գովազդը բեռնվում չէ։ Նորից փորձեք։');
-        });
-    } else {
-        // For other ads, use simulation (or your existing method)
-        simulateAd(adId);
-    }
-}
-
-// Helper function to credit user after ad completion
-function creditUserForAd(adId) {
-    const ad = ads.find(a => a.id === adId);
-    if (!ad) return;
-
-    userData.balance += ad.reward;
-    userData.adsWatched += 1;
-    userData.adsWatchedToday += 1;
-    userData.totalEarned += ad.reward;
-    updateUI();
-    saveUserData();
-
-    // Mark ad as completed
-    const adElement = document.getElementById(`ad-${adId}`);
-    const adAction = document.getElementById(`ad-action-${adId}`);
-    
-    if (adElement) adElement.classList.add('disabled');
-    if (adAction) {
-        adAction.textContent = 'Ավարտված';
-        adAction.classList.add('completed');
-        adAction.disabled = true;
-    }
-}
-
-// Simulation for non-Monetag ads (ads 2, 3, 6, 7, 10)
-function simulateAd(adId) {
-    const ad = ads.find(a => a.id === adId);
-    if (!ad) return;
-
-    let progress = 0;
-    const progressInterval = setInterval(() => {
-        progress += 10;
-        showToast(`Դիտվում է գովազդը... ${progress}%`);
-        
-        if (progress >= 100) {
-            clearInterval(progressInterval);
-            creditUserForAd(adId);
+            // Use Rewarded interstitial for ads 1, 4, 5, 8, 9
+            if ([1, 4, 5, 8, 9].includes(adId)) {
+                // Monetag Rewarded Interstitial ad
+                show_10120830().then(() => {
+                    // User watched the ad - credit the reward
+                    creditUserForAd(adId);
+                    showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
+                }).catch((error) => {
+                    console.error('Ad failed to load:', error);
+                    showToast('Գովազդը բեռնվում չէ։ Նորից փորձեք։');
+                });
+            }
+            // Use Rewarded Popup for ads 2, 3, 6, 7, 10
+            else if ([2, 3, 6, 7, 10].includes(adId)) {
+                // Monetag Rewarded Popup ad
+                show_10120830('pop').then(() => {
+                    // User watched the ad - credit the reward
+                    creditUserForAd(adId);
+                    showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
+                }).catch((error) => {
+                    console.error('Ad failed to load:', error);
+                    showToast('Գովազդը բեռնվում չէ։ Նորից փորձեք։');
+                });
+            }
         }
-    }, 300);
-}
+
+        // Helper function to credit user after ad completion
+        function creditUserForAd(adId) {
+            const ad = ads.find(a => a.id === adId);
+            if (!ad) return;
+
+            userData.balance += ad.reward;
+            userData.adsWatched += 1;
+            userData.adsWatchedToday += 1;
+            userData.totalEarned += ad.reward;
+            updateUI();
+            saveUserData();
+
+            // Mark ad as completed
+            const adElement = document.getElementById(`ad-${adId}`);
+            const adAction = document.getElementById(`ad-action-${adId}`);
+            
+            if (adElement) adElement.classList.add('disabled');
+            if (adAction) {
+                adAction.textContent = 'Ավարտված';
+                adAction.classList.add('completed');
+                adAction.disabled = true;
+            }
+        }
+
+        // Monetag ad functions (these will be provided by Monetag)
+        function show_10120830(type) {
+            return new Promise((resolve, reject) => {
+                // This function will be replaced by Monetag's actual ad code
+                console.log('Showing Monetag ad, type:', type || 'interstitial');
+                
+                // Simulate ad loading and display
+                setTimeout(() => {
+                    // For testing, let's assume 80% success rate
+                    if (Math.random() > 0.2) {
+                        resolve(); // Ad completed successfully
+                    } else {
+                        reject(new Error('Ad failed to load')); // Ad failed
+                    }
+                }, 1500);
+            });
+        }
 
         // Render ads to grid
         function renderAds() {
@@ -1408,11 +1417,7 @@ function simulateAd(adId) {
                 el.style.animationDelay = (index * 0.1) + 's';
                 el.classList.add('slide-in');
             });
-            
-            // Initialize Monetag ads
-            setTimeout(loadMonetagNativeAds, 1000);
         });
     </script>
 </body>
 </html>
-
