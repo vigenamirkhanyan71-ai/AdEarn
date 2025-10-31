@@ -526,8 +526,47 @@
             margin-bottom: 24px;
         }
 
-        .visa-card {
-            background: linear-gradient(135deg, #1a1f71, #2a2a9a);
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .payment-method {
+            flex: 1;
+            min-width: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .payment-method.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+        }
+
+        .payment-method:hover {
+            transform: translateY(-2px);
+        }
+
+        .payment-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .payment-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Payment Method Specific Styles */
+        .telcell-card {
+            background: linear-gradient(135deg, #FF0000, #CC0000);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
@@ -536,23 +575,22 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .visa-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
+        .idram-card {
+            background: linear-gradient(135deg, #FF6B00, #FF8C00);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .visa-logo {
+        .idram-logo, .telcell-logo {
             text-align: right;
             margin-bottom: 20px;
         }
 
-        .visa-logo i {
+        .idram-logo i, .telcell-logo i {
             font-size: 40px;
             color: white;
         }
@@ -571,7 +609,7 @@
             font-size: 14px;
         }
 
-        .card-holder, .card-expiry {
+        .card-holder {
             display: flex;
             flex-direction: column;
         }
@@ -713,6 +751,10 @@
         @media (max-width: 380px) {
             .ads-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .payment-methods {
+                flex-direction: column;
             }
         }
     </style>
@@ -859,54 +901,75 @@
             <!-- Withdraw Section -->
             <div class="section" id="withdraw-section" style="display: none;">
                 <div class="section-title">
-                    Դուրս գրեք Դրամ Visa քարտին
+                    Դուրս գրեք Դրամ
                 </div>
                 
                 <div class="withdrawal-container">
-                    <!-- Visa Card Preview -->
-                    <div class="visa-card">
-                        <div class="visa-logo">
-                            <i class="fab fa-cc-visa"></i>
+                    <!-- Payment Methods -->
+                    <div class="payment-methods">
+                        <div class="payment-method active" data-method="telcell" onclick="selectPaymentMethod('telcell')">
+                            <div class="payment-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="payment-name">Telcell</div>
                         </div>
-                        <div class="card-number" id="cardPreview">**** **** **** ****</div>
+                        <div class="payment-method" data-method="idram" onclick="selectPaymentMethod('idram')">
+                            <div class="payment-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="payment-name">Idram</div>
+                        </div>
+                    </div>
+
+                    <!-- Telcell Card Preview -->
+                    <div class="telcell-card" id="telcellPreview">
+                        <div class="telcell-logo">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="card-number" id="telcellId">Telcell ID</div>
                         <div class="card-details">
                             <div class="card-holder">
-                                <div class="card-label">Քարտի տեր</div>
-                                <div id="namePreview">ՁԵՐ ԱՆՈՒՆԸ</div>
+                                <div class="card-label">Telcell ID</div>
+                                <div id="telcellName">ՁԵՌ TELCELL ID-N</div>
                             </div>
-                            <div class="card-expiry">
-                                <div class="card-label">ՎԵՐՋ</div>
-                                <div id="expiryPreview">ԱԱ/ՏՏ</div>
+                        </div>
+                    </div>
+
+                    <!-- Idram Card Preview -->
+                    <div class="idram-card" id="idramPreview" style="display: none;">
+                        <div class="idram-logo">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="card-number" id="idramId">IDram ID</div>
+                        <div class="card-details">
+                            <div class="card-holder">
+                                <div class="card-label">Idram ID</div>
+                                <div id="idramName">ՁԵՐ IDRAM ID-N</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Withdrawal Form -->
                     <div class="withdraw-form">
-                        <div class="form-group">
-                            <label class="form-label">Քարտի համար</label>
-                            <input type="text" class="form-input" id="cardNumber" 
-                                   placeholder="1234 5678 9012 3456" maxlength="19"
-                                   oninput="formatCardNumber(this)" onblur="validateCardNumber()">
-                            <div class="form-hint">16-նիշ Visa քարտի համար</div>
-                            <div id="cardError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
-                                Մուտքագրեք վավեր 16-նիշ Visa քարտի համար
+                        <div class="form-group" id="telcellForm">
+                            <label class="form-label">Telcell ID</label>
+                            <input type="text" class="form-input" id="telcellInput" 
+                                   placeholder="Ձեր Telcell ID" 
+                                   oninput="updateTelcellPreview()" onblur="validateTelcellId()">
+                            <div class="form-hint">Մուտքագրեք ձեր Telcell ID-ն</div>
+                            <div id="telcellError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
+                                Մուտքագրեք վավեր Telcell ID
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Քարտի տեր</label>
-                            <input type="text" class="form-input" id="cardName" 
-                                   placeholder="Անուն Ազգանուն" oninput="updateCardPreview()">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Վավերականության ժամկետ</label>
-                            <input type="text" class="form-input" id="cardExpiry" 
-                                   placeholder="ԱԱ/ՏՏ" maxlength="5"
-                                   oninput="formatExpiry(this)" onblur="validateExpiry()">
-                            <div id="expiryError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
-                                Մուտքագրեք վավեր ժամկետ
+                        <div class="form-group" id="idramForm" style="display: none;">
+                            <label class="form-label">Idram ID</label>
+                            <input type="text" class="form-input" id="idramInput" 
+                                   placeholder="Ձեր Idram ID" 
+                                   oninput="updateIdramPreview()" onblur="validateIdramId()">
+                            <div class="form-hint">Մուտքագրեք ձեր Idram ID-ն</div>
+                            <div id="idramError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
+                                Մուտքագրեք վավեր Idram ID
                             </div>
                         </div>
 
@@ -921,7 +984,7 @@
                         </div>
 
                         <button class="withdraw-btn" id="withdrawBtn" onclick="processWithdrawal()" disabled>
-                            Դուրս գրել Դրամ Visa քարտին
+                            Դուրս գրել Դրամ
                         </button>
                     </div>
 
@@ -933,9 +996,9 @@
                         </div>
                         <div class="info-text">
                             • Նվազագույն դուրս գրում՝ 100,000 Դրամ<br>
-                            • Դուրս գրումները մշակվում են 3-5 աշխատանքային օրվա ընթացքում<br>
-                            • Կիրառվում է 2.9% մշակման վճար<br>
-                            • Ընդունվում են միայն Visa քարտեր<br>
+                            • Դուրս գրումները մշակվում են 24 ժամվա ընթացքում<br>
+                            • Կիրառվում է 0% մշակման վճար<br>
+                            • Ընդունվում են Telcell ID և Idram ID<br>
                             • Օրական ստացեք 6,500 Դրամ բոլոր գովազդները դիտելուց
                         </div>
                     </div>
@@ -991,6 +1054,9 @@
             username: "Օգտատեր",
             referredBy: null
         };
+
+        // Current payment method
+        let currentPaymentMethod = 'telcell';
 
         // Load user data from localStorage
         function loadUserData() {
@@ -1219,6 +1285,32 @@
             }
         }
 
+        // Select payment method
+        function selectPaymentMethod(method) {
+            currentPaymentMethod = method;
+            
+            // Update active state
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelector(`.payment-method[data-method="${method}"]`).classList.add('active');
+            
+            // Show/hide forms and previews
+            if (method === 'telcell') {
+                document.getElementById('telcellPreview').style.display = 'block';
+                document.getElementById('idramPreview').style.display = 'none';
+                document.getElementById('telcellForm').style.display = 'block';
+                document.getElementById('idramForm').style.display = 'none';
+            } else if (method === 'idram') {
+                document.getElementById('telcellPreview').style.display = 'none';
+                document.getElementById('idramPreview').style.display = 'block';
+                document.getElementById('telcellForm').style.display = 'none';
+                document.getElementById('idramForm').style.display = 'block';
+            }
+            
+            checkWithdrawalForm();
+        }
+
         // Update referrals list
         function updateReferralsList() {
             const referralsList = document.getElementById('referralsList');
@@ -1261,6 +1353,129 @@
                 document.getElementById('welcomeBonus').style.display = 'none';
                 showToast('🎉 Բարի գալուստ բոնուսը 7,000 Դրամ ստացվեց!');
             }
+        }
+
+        // Update Telcell preview
+        function updateTelcellPreview() {
+            const telcellId = document.getElementById('telcellInput').value;
+            document.getElementById('telcellId').textContent = telcellId || 'Telcell ID';
+            document.getElementById('telcellName').textContent = telcellId || 'ՁԵՌ TELCELL ID-N';
+            validateTelcellId();
+            checkWithdrawalForm();
+        }
+
+        // Validate Telcell ID
+        function validateTelcellId() {
+            const telcellId = document.getElementById('telcellInput').value.trim();
+            const telcellError = document.getElementById('telcellError');
+            
+            if (telcellId.length >= 3) {
+                telcellError.style.display = 'none';
+                document.getElementById('telcellInput').classList.remove('error');
+                return true;
+            } else {
+                telcellError.style.display = 'block';
+                document.getElementById('telcellInput').classList.add('error');
+                return false;
+            }
+        }
+
+        // Update Idram preview
+        function updateIdramPreview() {
+            const idramId = document.getElementById('idramInput').value;
+            document.getElementById('idramId').textContent = idramId || 'IDram ID';
+            document.getElementById('idramName').textContent = idramId || 'ՁԵՐ IDRAM ID-N';
+            validateIdramId();
+            checkWithdrawalForm();
+        }
+
+        // Validate Idram ID
+        function validateIdramId() {
+            const idramId = document.getElementById('idramInput').value.trim();
+            const idramError = document.getElementById('idramError');
+            
+            if (idramId.length >= 3) {
+                idramError.style.display = 'none';
+                document.getElementById('idramInput').classList.remove('error');
+                return true;
+            } else {
+                idramError.style.display = 'block';
+                document.getElementById('idramInput').classList.add('error');
+                return false;
+            }
+        }
+
+        // Validate withdrawal amount
+        function validateWithdrawalAmount() {
+            const amount = parseInt(document.getElementById('withdrawAmount').value) || 0;
+            const amountError = document.getElementById('amountError');
+            
+            if (amount >= 100000) {
+                amountError.style.display = 'none';
+                document.getElementById('withdrawAmount').classList.remove('error');
+                return true;
+            } else {
+                amountError.style.display = 'block';
+                document.getElementById('withdrawAmount').classList.add('error');
+                return false;
+            }
+        }
+
+        // Check withdrawal form
+        function checkWithdrawalForm() {
+            let isValid = false;
+            
+            if (currentPaymentMethod === 'telcell') {
+                isValid = validateTelcellId() && validateWithdrawalAmount();
+            } else if (currentPaymentMethod === 'idram') {
+                isValid = validateIdramId() && validateWithdrawalAmount();
+            }
+            
+            if (isValid) {
+                document.getElementById('withdrawBtn').disabled = false;
+            } else {
+                document.getElementById('withdrawBtn').disabled = true;
+            }
+        }
+
+        // Process withdrawal
+        function processWithdrawal() {
+            const withdrawAmount = parseInt(document.getElementById('withdrawAmount').value) || 0;
+            
+            if (withdrawAmount < 100000) {
+                showToast('Նվազագույն դուրս գրումը 100,000 Դրամ է');
+                return;
+            }
+            
+            if (withdrawAmount > userData.balance) {
+                showToast('Բավարար դրամ չկա հաշվում');
+                return;
+            }
+            
+            let methodName = '';
+            if (currentPaymentMethod === 'telcell') {
+                methodName = 'Telcell';
+            } else if (currentPaymentMethod === 'idram') {
+                methodName = 'Idram';
+            }
+            
+            showToast(`Դուրս գրումը մշակվում է ձեր ${methodName} հաշվին...`);
+            
+            setTimeout(() => {
+                userData.balance -= withdrawAmount;
+                updateUI();
+                saveUserData();
+                
+                // Clear form
+                document.getElementById('telcellInput').value = '';
+                document.getElementById('idramInput').value = '';
+                document.getElementById('withdrawAmount').value = '';
+                updateTelcellPreview();
+                updateIdramPreview();
+                checkWithdrawalForm();
+                
+                showToast(`Հաջողությամբ։ ${withdrawAmount.toLocaleString()} Դրամ կտեղափոխվի ձեր ${methodName} հաշիվ 24 ժամվա ընթացքում։`);
+            }, 3000);
         }
 
         // Show Monetag ad
@@ -1413,143 +1628,6 @@
             });
         }
 
-        // Card validation functions
-        function formatCardNumber(input) {
-            let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-            let formattedValue = '';
-            
-            for (let i = 0; i < value.length; i++) {
-                if (i > 0 && i % 4 === 0) {
-                    formattedValue += ' ';
-                }
-                formattedValue += value[i];
-            }
-            
-            input.value = formattedValue;
-            updateCardPreview();
-            validateCardNumber();
-            checkWithdrawalForm();
-        }
-
-        function validateCardNumber() {
-            const cardNumber = document.getElementById('cardNumber').value.replace(/\s+/g, '');
-            const cardError = document.getElementById('cardError');
-            
-            if (cardNumber.length === 16 && /^4/.test(cardNumber)) {
-                cardError.style.display = 'none';
-                document.getElementById('cardNumber').classList.remove('error');
-                return true;
-            } else {
-                cardError.style.display = 'block';
-                document.getElementById('cardNumber').classList.add('error');
-                return false;
-            }
-        }
-
-        function formatExpiry(input) {
-            let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-            
-            if (value.length >= 2) {
-                value = value.substring(0, 2) + '/' + value.substring(2, 4);
-            }
-            
-            input.value = value;
-            updateCardPreview();
-            validateExpiry();
-            checkWithdrawalForm();
-        }
-
-        function validateExpiry() {
-            const expiry = document.getElementById('cardExpiry').value;
-            const expiryError = document.getElementById('expiryError');
-            const [month, year] = expiry.split('/');
-            
-            if (month && year && month.length === 2 && year.length === 2) {
-                const monthNum = parseInt(month);
-                const yearNum = parseInt(year);
-                
-                if (monthNum >= 1 && monthNum <= 12 && yearNum >= 23) {
-                    expiryError.style.display = 'none';
-                    document.getElementById('cardExpiry').classList.remove('error');
-                    return true;
-                }
-            }
-            
-            expiryError.style.display = 'block';
-            document.getElementById('cardExpiry').classList.add('error');
-            return false;
-        }
-
-        function validateWithdrawalAmount() {
-            const amount = parseInt(document.getElementById('withdrawAmount').value) || 0;
-            const amountError = document.getElementById('amountError');
-            
-            if (amount >= 100000) {
-                amountError.style.display = 'none';
-                document.getElementById('withdrawAmount').classList.remove('error');
-                return true;
-            } else {
-                amountError.style.display = 'block';
-                document.getElementById('withdrawAmount').classList.add('error');
-                return false;
-            }
-        }
-
-        function updateCardPreview() {
-            const cardNumber = document.getElementById('cardNumber').value;
-            const cardName = document.getElementById('cardName').value;
-            const cardExpiry = document.getElementById('cardExpiry').value;
-            
-            document.getElementById('cardPreview').textContent = cardNumber || '**** **** **** ****';
-            document.getElementById('namePreview').textContent = cardName || 'ՁԵՐ ԱՆՈՒՆԸ';
-            document.getElementById('expiryPreview').textContent = cardExpiry || 'ԱԱ/ՏՏ';
-        }
-
-        function checkWithdrawalForm() {
-            const isCardValid = validateCardNumber();
-            const isExpiryValid = validateExpiry();
-            const isAmountValid = validateWithdrawalAmount();
-            const hasName = document.getElementById('cardName').value.trim().length > 0;
-            
-            if (isCardValid && isExpiryValid && isAmountValid && hasName) {
-                document.getElementById('withdrawBtn').disabled = false;
-            } else {
-                document.getElementById('withdrawBtn').disabled = true;
-            }
-        }
-
-        // Process withdrawal
-        function processWithdrawal() {
-            const withdrawAmount = parseInt(document.getElementById('withdrawAmount').value) || 0;
-            
-            if (withdrawAmount < 100000) {
-                showToast('Նվազագույն դուրս գրումը 100,000 Դրամ է');
-                return;
-            }
-            
-            if (withdrawAmount > userData.balance) {
-                showToast('Բավարար դրամ չկա հաշվում');
-                return;
-            }
-            
-            showToast('Դուրս գրումը մշակվում է ձեր Visa քարտին...');
-            
-            setTimeout(() => {
-                userData.balance -= withdrawAmount;
-                updateUI();
-                saveUserData();
-                
-                document.getElementById('cardNumber').value = '';
-                document.getElementById('cardName').value = '';
-                document.getElementById('cardExpiry').value = '';
-                document.getElementById('withdrawAmount').value = '';
-                updateCardPreview();
-                checkWithdrawalForm();
-                
-                showToast(`Հաջողությամբ։ ${withdrawAmount.toLocaleString()} Դրամ կտեղափոխվի ձեր Visa քարտ 3-5 աշխատանքային օրվա ընթացքում։`);
-            }, 3000);
-        }
-
         // Update UI with user data
         function updateUI() {
             document.getElementById('balanceAmount').textContent = userData.balance.toLocaleString();
@@ -1584,9 +1662,9 @@
             loadUserData();
             renderAds();
             
-            document.getElementById('cardNumber').addEventListener('input', checkWithdrawalForm);
-            document.getElementById('cardName').addEventListener('input', checkWithdrawalForm);
-            document.getElementById('cardExpiry').addEventListener('input', checkWithdrawalForm);
+            // Add event listeners for withdrawal form validation
+            document.getElementById('telcellInput').addEventListener('input', checkWithdrawalForm);
+            document.getElementById('idramInput').addEventListener('input', checkWithdrawalForm);
             document.getElementById('withdrawAmount').addEventListener('input', checkWithdrawalForm);
             
             const elements = document.querySelectorAll('.ad-card');
