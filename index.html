@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+ <!DOCTYPE html>
+<html lang="hy">
 <head>
-    <script src='//libtl.com/sdk.js' data-zone='10120830' data-sdk='show_10120830'></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VideoEarn Pro - Watch Ads & Earn AMD</title>
+    <title>AdEarn - Դիտեք Գովազդներ և Ստացեք Դրամ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
@@ -59,13 +58,13 @@
             min-height: 100vh;
             position: relative;
             overflow: hidden;
-            padding-bottom: 80px; /* Footer-ի համար */
+            padding-bottom: 80px;
         }
 
         /* Header Styles */
         .header {
             background: var(--gradient);
-            padding: 20px 16px 80px;
+            padding: 20px 16px 40px;
             position: relative;
             overflow: hidden;
         }
@@ -102,6 +101,14 @@
             justify-content: center;
             font-size: 20px;
             border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .app-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: white;
         }
 
         .balance-card {
@@ -142,33 +149,6 @@
         .stat-label {
             font-size: 12px;
             opacity: 0.8;
-        }
-
-        /* Top Navigation Tabs */
-        .nav-tabs {
-            display: flex;
-            background: var(--dark);
-            margin: -40px 16px 20px;
-            border-radius: var(--radius);
-            padding: 8px;
-            position: relative;
-            z-index: 10;
-            box-shadow: var(--shadow);
-        }
-
-        .nav-tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .nav-tab.active {
-            background: var(--gradient);
-            color: white;
         }
 
         /* Footer Navigation */
@@ -215,23 +195,13 @@
 
         /* Main Content */
         .main-content {
-            padding: 0 16px;
+            padding: 20px 16px;
         }
 
         .section-title {
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .see-all {
-            font-size: 14px;
-            color: var(--primary);
-            font-weight: 600;
-            cursor: pointer;
         }
 
         /* Ads Grid */
@@ -529,6 +499,28 @@
             z-index: 2;
         }
 
+        .referral-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-top: 16px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .info-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
         /* Withdrawal Section */
         .withdrawal-container {
             background: rgba(255, 255, 255, 0.05);
@@ -635,12 +627,6 @@
             margin-top: 4px;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
         .withdraw-btn {
             background: var(--gradient);
             color: white;
@@ -673,20 +659,6 @@
             padding: 16px;
             margin-top: 16px;
             border-left: 4px solid var(--accent);
-        }
-
-        .info-title {
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-text {
-            font-size: 14px;
-            opacity: 0.8;
-            line-height: 1.4;
         }
 
         /* Toast Notification */
@@ -745,10 +717,6 @@
             .ads-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -763,32 +731,27 @@
                     </div>
                 </div>
                 
+                <div class="app-title">AdEarn</div>
+                
                 <div class="balance-card">
-                    <div class="balance-label">Your Balance</div>
-                    <div class="balance-amount" id="balanceAmount">0 <span style="font-size: 18px; opacity: 0.8;">AMD</span></div>
+                    <div class="balance-label">Ձեր Հաշիվը</div>
+                    <div class="balance-amount" id="balanceAmount">0 <span style="font-size: 18px; opacity: 0.8;">Դրամ</span></div>
                     <div class="balance-stats">
                         <div class="stat-item">
                             <div class="stat-value" id="adsWatched">0</div>
-                            <div class="stat-label">Ads Today</div>
+                            <div class="stat-label">Գովազդներ Այսօր</div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="referralsCount">0</div>
-                            <div class="stat-label">Referrals</div>
+                            <div class="stat-label">Ուղղորդումներ</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="totalEarned">0 AMD</div>
-                            <div class="stat-label">Earned</div>
+                            <div class="stat-value" id="totalEarned">0 Դրամ</div>
+                            <div class="stat-label">Ստացված</div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Top Navigation Tabs -->
-        <div class="nav-tabs">
-            <div class="nav-tab active" onclick="switchTab('ads')">Watch Ads</div>
-            <div class="nav-tab" onclick="switchTab('referrals')">Referrals</div>
-            <div class="nav-tab" onclick="switchTab('withdraw')">Withdraw</div>
         </div>
 
         <!-- Main Content -->
@@ -796,67 +759,85 @@
             <!-- Ads Section -->
             <div class="section" id="ads-section">
                 <div class="section-title">
-                    Watch Ads & Earn AMD
-                    <span class="see-all" onclick="loadMoreAds()">Refresh</span>
+                    Դիտեք Գովազդներ և Ստացեք Դրամ
                 </div>
                 
                 <!-- Welcome Bonus -->
                 <div class="welcome-bonus" id="welcomeBonus" style="display: none;">
-                    <div class="welcome-title">🎉 Welcome Bonus! 🎉</div>
-                    <div class="welcome-desc">As a new user, claim your 7000 AMD bonus to get started!</div>
-                    <div class="welcome-bonus-amount">7,000 AMD</div>
-                    <button class="claim-bonus-btn" onclick="claimWelcomeBonus()">Claim Bonus</button>
+                    <div class="welcome-title">🎉 Բարի Գալուստ Բոնուս! 🎉</div>
+                    <div class="welcome-desc">Որպես նոր օգտատեր, ստացեք ձեր 7000 Դրամ բոնուսը</div>
+                    <div class="welcome-bonus-amount">7,000 Դրամ</div>
+                    <button class="claim-bonus-btn" onclick="claimWelcomeBonus()">Ստանալ Բոնուս</button>
                 </div>
                 
                 <!-- Daily Progress -->
                 <div class="daily-progress">
                     <div class="progress-header">
-                        <div class="progress-title">Daily Progress</div>
-                        <div class="progress-count" id="dailyProgress">0/10 ads watched</div>
+                        <div class="progress-title">Օրական Պրոգրես</div>
+                        <div class="progress-count" id="dailyProgress">0/10 գովազդ դիտված</div>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFillBar"></div>
                     </div>
-                    <div class="progress-text" id="progressText">Watch ads to earn AMD. Daily limit: 10 ads</div>
+                    <div class="progress-text" id="progressText">Դիտեք գովազդներ դրամ ստանալու համար: Օրական սահմանաչափ՝ 10 գովազդ</div>
                 </div>
                 
                 <!-- Ads Grid -->
                 <div class="ads-grid" id="adsGrid">
                     <!-- Ads will be loaded dynamically -->
                 </div>
-                
-                <!-- Loading indicator -->
-                <div id="loadingIndicator" style="text-align: center; padding: 20px; display: none;">
-                    <div class="loading-spinner"></div>
-                    <div style="margin-top: 10px; font-size: 14px; opacity: 0.7;">Loading ads...</div>
-                </div>
             </div>
 
             <!-- Referral Section -->
             <div class="section" id="referrals-section" style="display: none;">
                 <div class="section-title">
-                    Refer & Earn AMD
+                    Ուղղորդեք և Ստացեք Դրամ
                 </div>
                 <div class="referral-card">
-                    <div class="referral-title">Invite Friends</div>
-                    <div class="referral-desc">Share your referral link and earn 100 AMD for each friend who joins</div>
+                    <div class="referral-title">Հրավիրեք Ընկերներին</div>
+                    <div class="referral-desc">Կիսվեք ձեր հղումով և ստացեք 1000 Դրամ յուրաքանչյուր ընկերոջ համար</div>
                     <div class="referral-link-container">
-                        <div class="referral-link" id="referralLink">Loading...</div>
-                        <button class="copy-btn" onclick="copyReferralLink()">Copy</button>
+                        <div class="referral-link" id="referralLink">Բեռնվում է...</div>
+                        <button class="copy-btn" onclick="copyReferralLink()">Պատճենել</button>
                     </div>
                     <div class="referral-stats">
                         <div class="stat-item">
                             <div class="stat-value" id="referralFriends">0</div>
-                            <div class="stat-label">Friends</div>
+                            <div class="stat-label">Ընկերներ</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="referralPoints">0 AMD</div>
-                            <div class="stat-label">Earned</div>
+                            <div class="stat-value" id="referralPoints">0 Դրամ</div>
+                            <div class="stat-label">Ստացված</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="referralEarned">0 AMD</div>
-                            <div class="stat-label">Total</div>
+                            <div class="stat-value" id="referralEarned">0 Դրամ</div>
+                            <div class="stat-label">Ընդհանուր</div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Referral Information -->
+                <div class="referral-info">
+                    <div class="info-title">
+                        <i class="fas fa-info-circle"></i>
+                        Ուղղորդման Մանրամասներ
+                    </div>
+                    <div class="info-text">
+                        • Ձեր ուղղորդած յուրաքանչյուր ընկեր ստանում է 7000 Դրամ բոնուս<br>
+                        • Դուք ստանում եք 1000 Դրամ ձեր ուղղորդած յուրաքանչյուր ընկերոջ համար<br>
+                        • Ձեր ուղղորդած ընկերները կցուցադրվեն այստեղ իրենց Telegram անուններով<br>
+                        • Ուղղորդումները հաշվառվում են միայն այն դեպքում, եթե ընկերը ակտիվ է
+                    </div>
+                </div>
+
+                <!-- Referrals List -->
+                <div class="referral-info" id="referralsList" style="display: none;">
+                    <div class="info-title">
+                        <i class="fas fa-users"></i>
+                        Ձեր Ուղղորդած Ընկերները
+                    </div>
+                    <div class="info-text" id="referralsListContent">
+                        <!-- Referrals will be listed here -->
                     </div>
                 </div>
             </div>
@@ -864,7 +845,7 @@
             <!-- Withdraw Section -->
             <div class="section" id="withdraw-section" style="display: none;">
                 <div class="section-title">
-                    Withdraw AMD to Visa Card
+                    Դուրս գրեք Դրամ Visa քարտին
                 </div>
                 
                 <div class="withdrawal-container">
@@ -876,12 +857,12 @@
                         <div class="card-number" id="cardPreview">**** **** **** ****</div>
                         <div class="card-details">
                             <div class="card-holder">
-                                <div class="card-label">CARD HOLDER</div>
-                                <div id="namePreview">YOUR NAME</div>
+                                <div class="card-label">Քարտի տեր</div>
+                                <div id="namePreview">ՁԵՐ ԱՆՈՒՆԸ</div>
                             </div>
                             <div class="card-expiry">
-                                <div class="card-label">EXPIRES</div>
-                                <div id="expiryPreview">MM/YY</div>
+                                <div class="card-label">ՎԵՐՋ</div>
+                                <div id="expiryPreview">ԱԱ/ՏՏ</div>
                             </div>
                         </div>
                     </div>
@@ -889,55 +870,44 @@
                     <!-- Withdrawal Form -->
                     <div class="withdraw-form">
                         <div class="form-group">
-                            <label class="form-label">Card Number</label>
+                            <label class="form-label">Քարտի համար</label>
                             <input type="text" class="form-input" id="cardNumber" 
                                    placeholder="1234 5678 9012 3456" maxlength="19"
                                    oninput="formatCardNumber(this)" onblur="validateCardNumber()">
-                            <div class="form-hint">16-digit Visa card number</div>
+                            <div class="form-hint">16-նիշ Visa քարտի համար</div>
                             <div id="cardError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
-                                Please enter a valid 16-digit Visa card number
+                                Մուտքագրեք վավեր 16-նիշ Visa քարտի համար
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Cardholder Name</label>
+                            <label class="form-label">Քարտի տեր</label>
                             <input type="text" class="form-input" id="cardName" 
-                                   placeholder="John Doe" oninput="updateCardPreview()">
+                                   placeholder="Անուն Ազգանուն" oninput="updateCardPreview()">
                         </div>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Expiry Date</label>
-                                <input type="text" class="form-input" id="cardExpiry" 
-                                       placeholder="MM/YY" maxlength="5"
-                                       oninput="formatExpiry(this)" onblur="validateExpiry()">
-                                <div id="expiryError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
-                                    Please enter a valid expiry date
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">CVV</label>
-                                <input type="text" class="form-input" id="cardCvv" 
-                                       placeholder="123" maxlength="3"
-                                       oninput="validateCvv(this)">
-                                <div id="cvvError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
-                                    Please enter a valid 3-digit CVV
-                                </div>
+                        <div class="form-group">
+                            <label class="form-label">Վավերականության ժամկետ</label>
+                            <input type="text" class="form-input" id="cardExpiry" 
+                                   placeholder="ԱԱ/ՏՏ" maxlength="5"
+                                   oninput="formatExpiry(this)" onblur="validateExpiry()">
+                            <div id="expiryError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
+                                Մուտքագրեք վավեր ժամկետ
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Withdrawal Amount</label>
+                            <label class="form-label">Դուրս գրման գումար</label>
                             <input type="number" class="form-input" id="withdrawAmount" 
                                    placeholder="100000" min="100000" oninput="validateWithdrawalAmount()">
-                            <div class="form-hint">Minimum withdrawal: 100,000 AMD</div>
+                            <div class="form-hint">Նվազագույն դուրս գրում՝ 100,000 Դրամ</div>
                             <div id="amountError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
-                                Minimum withdrawal amount is 100,000 AMD
+                                Նվազագույն դուրս գրման գումարը 100,000 Դրամ է
                             </div>
                         </div>
 
                         <button class="withdraw-btn" id="withdrawBtn" onclick="processWithdrawal()" disabled>
-                            Withdraw AMD to Visa Card
+                            Դուրս գրել Դրամ Visa քարտին
                         </button>
                     </div>
 
@@ -945,14 +915,14 @@
                     <div class="withdrawal-info">
                         <div class="info-title">
                             <i class="fas fa-info-circle"></i>
-                            Important Information
+                            Կարևոր Տեղեկատվություն
                         </div>
                         <div class="info-text">
-                            • Minimum withdrawal: 100,000 AMD<br>
-                            • Withdrawals processed within 3-5 business days<br>
-                            • 2.9% processing fee applies<br>
-                            • Only Visa cards are accepted<br>
-                            • Earn 6,500 AMD daily from watching all ads
+                            • Նվազագույն դուրս գրում՝ 100,000 Դրամ<br>
+                            • Դուրս գրումները մշակվում են 3-5 աշխատանքային օրվա ընթացքում<br>
+                            • Կիրառվում է 2.9% մշակման վճար<br>
+                            • Ընդունվում են միայն Visa քարտեր<br>
+                            • Օրական ստացեք 6,500 Դրամ բոլոր գովազդները դիտելուց
                         </div>
                     </div>
                 </div>
@@ -964,15 +934,15 @@
             <div class="footer-tabs">
                 <div class="footer-tab active" onclick="switchTab('ads')">
                     <i class="fas fa-play-circle"></i>
-                    <span>Ads</span>
+                    <span>Գովազդներ</span>
                 </div>
                 <div class="footer-tab" onclick="switchTab('referrals')">
                     <i class="fas fa-users"></i>
-                    <span>Referrals</span>
+                    <span>Ուղղորդումներ</span>
                 </div>
                 <div class="footer-tab" onclick="switchTab('withdraw')">
                     <i class="fas fa-wallet"></i>
-                    <span>Withdraw</span>
+                    <span>Դուրս գրում</span>
                 </div>
             </div>
         </div>
@@ -997,12 +967,13 @@
             totalEarned: 0, // In AMD
             referralLink: "",
             memberSince: new Date().toISOString().split('T')[0],
-            welcomeBonusClaimed: false
+            welcomeBonusClaimed: false,
+            referredUsers: [] // Array to store referred users with their Telegram usernames
         };
 
         // Load user data from localStorage
         function loadUserData() {
-            const saved = localStorage.getItem('videoEarnUserData');
+            const saved = localStorage.getItem('adEarnUserData');
             const today = new Date().toDateString();
             
             if (saved) {
@@ -1015,7 +986,12 @@
                     saveUserData();
                 }
             } else {
-                userData.referralLink = `https://t.me/VideoEarnBot?start=ref${Math.random().toString(36).substr(2, 9)}`;
+                // Generate referral link with Telegram user data if available
+                let userId = "user";
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    userId = tg.initDataUnsafe.user.id || "user";
+                }
+                userData.referralLink = `https://t.me/AdEarnBot?start=ref${userId}`;
                 userData.lastAdDate = today;
                 saveUserData();
             }
@@ -1024,23 +1000,23 @@
 
         // Save user data to localStorage
         function saveUserData() {
-            localStorage.setItem('videoEarnUserData', JSON.stringify(userData));
+            localStorage.setItem('adEarnUserData', JSON.stringify(userData));
         }
 
         // Ads data - 10 ads per day, total 6500 AMD
-   // Ads data - 10 ads per day, total 6500 AMD + Monetag bonus
-const ads = [
-    { id: 1, title: "Ad 1", reward: 600, duration: "30s", icon: "ad" },
-    { id: 2, title: "Ad 2", reward: 620, duration: "25s", icon: "ad" },
-    { id: 3, title: "Ad 3", reward: 640, duration: "20s", icon: "ad" },
-    { id: 4, title: "Ad 4", reward: 660, duration: "35s", icon: "ad" },
-    { id: 5, title: "Monetag Bonus", reward: 1000, duration: "45s", icon: "ad", type: "monetag" },
-    { id: 6, title: "Ad 6", reward: 700, duration: "40s", icon: "ad" },
-    { id: 7, title: "Ad 7", reward: 720, duration: "25s", icon: "ad" },
-    { id: 8, title: "Ad 8", reward: 740, duration: "30s", icon: "ad" },
-    { id: 9, title: "Ad 9", reward: 760, duration: "35s", icon: "ad" },
-    { id: 10, title: "Ad 10", reward: 780, duration: "45s", icon: "ad" }
-];
+        const ads = [
+            { id: 1, title: "Գովազդ 1", reward: 600, duration: "30վ", icon: "ad" },
+            { id: 2, title: "Գովազդ 2", reward: 620, duration: "25վ", icon: "ad" },
+            { id: 3, title: "Գովազդ 3", reward: 640, duration: "20վ", icon: "ad" },
+            { id: 4, title: "Գովազդ 4", reward: 660, duration: "35վ", icon: "ad" },
+            { id: 5, title: "Գովազդ 5", reward: 680, duration: "30վ", icon: "ad" },
+            { id: 6, title: "Գովազդ 6", reward: 700, duration: "40վ", icon: "ad" },
+            { id: 7, title: "Գովազդ 7", reward: 720, duration: "25վ", icon: "ad" },
+            { id: 8, title: "Գովազդ 8", reward: 740, duration: "30վ", icon: "ad" },
+            { id: 9, title: "Գովազդ 9", reward: 760, duration: "35վ", icon: "ad" },
+            { id: 10, title: "Գովազդ 10", reward: 780, duration: "45վ", icon: "ad" }
+        ];
+
         // DOM Elements
         const toast = document.getElementById('toast');
         const adsGrid = document.getElementById('adsGrid');
@@ -1062,20 +1038,54 @@ const ads = [
             document.getElementById('referrals-section').style.display = 'none';
             document.getElementById('withdraw-section').style.display = 'none';
             
-            // Remove active class from all tabs (both top and footer)
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            // Remove active class from all footer tabs
             document.querySelectorAll('.footer-tab').forEach(t => t.classList.remove('active'));
             
             // Show selected section
             document.getElementById(`${tab}-section`).style.display = 'block';
             
-            // Activate corresponding tabs
-            document.querySelectorAll(`.nav-tab[onclick="switchTab('${tab}')"]`).forEach(t => {
-                t.classList.add('active');
-            });
+            // Activate corresponding footer tab
             document.querySelectorAll(`.footer-tab[onclick="switchTab('${tab}')"]`).forEach(t => {
                 t.classList.add('active');
             });
+
+            // Update referrals list when switching to referrals tab
+            if (tab === 'referrals') {
+                updateReferralsList();
+            }
+        }
+
+        // Update referrals list
+        function updateReferralsList() {
+            const referralsList = document.getElementById('referralsList');
+            const referralsListContent = document.getElementById('referralsListContent');
+            
+            if (userData.referredUsers.length > 0) {
+                referralsList.style.display = 'block';
+                referralsListContent.innerHTML = userData.referredUsers.map((user, index) => 
+                    `${index + 1}. @${user.username} - ${user.date} - 1000 Դրամ`
+                ).join('<br>');
+            } else {
+                referralsList.style.display = 'none';
+                referralsListContent.innerHTML = 'Դուք դեռ չեք ուղղորդել ոչ մի ընկերի';
+            }
+        }
+
+        // Simulate adding a referred user (this would normally come from Telegram)
+        function addReferredUser(username) {
+            if (!userData.referredUsers.some(user => user.username === username)) {
+                userData.referredUsers.push({
+                    username: username,
+                    date: new Date().toLocaleDateString('hy-AM')
+                });
+                userData.referrals = userData.referredUsers.length;
+                userData.balance += 1000; // Add 1000 AMD for each referral
+                userData.totalEarned += 1000;
+                saveUserData();
+                updateUI();
+                updateReferralsList();
+                showToast(`Շնորհավորում ենք։ Դուք ստացաք 1000 Դրամ @${username}-ի ուղղորդման համար։`);
+            }
         }
 
         // Claim welcome bonus
@@ -1088,89 +1098,52 @@ const ads = [
                 saveUserData();
                 
                 document.getElementById('welcomeBonus').style.display = 'none';
-                showToast('🎉 Welcome bonus of 7,000 AMD claimed!');
+                showToast('🎉 Բարի գալուստ բոնուսը 7,000 Դրամ ստացվեց!');
             }
         }
 
         // Monetag.com Integration Functions
-        // Monetag.com Integration Functions
-function showMonetagAd(adId) {
-    if (userData.adsWatchedToday >= 10) {
-        showToast('Daily ad limit reached! Come back tomorrow.');
-        return;
-    }
+        function showMonetagAd(adId) {
+            if (userData.adsWatchedToday >= 10) {
+                showToast('Օրական գովազդների սահմանաչափը լրացված է։ Վերադարձեք վաղը։');
+                return;
+            }
 
-    const ad = ads.find(a => a.id === adId);
-    
-    // Check if this is a Monetag ad
-    if (ad.type === "monetag") {
-        showToast('Loading Monetag ad... Please wait!');
-        
-        // Use Monetag rewarded interstitial
-        if (typeof show_10120830 !== 'undefined') {
-            show_10120830().then(() => {
-                // Ad completed successfully - reward user
-                userData.balance += ad.reward;
-                userData.adsWatched += 1;
-                userData.adsWatchedToday += 1;
-                userData.totalEarned += ad.reward;
-                updateUI();
-                saveUserData();
+            if (typeof monetag !== 'undefined') {
+                monetag('send', 'event', 'ad_watch_triggered');
+                showToast('Գովազդը բեռնվում է... Խնդրում ենք սպասել։');
                 
-                // Mark ad as completed
-                document.getElementById(`ad-${adId}`).classList.add('disabled');
-                document.getElementById(`ad-action-${adId}`).textContent = 'Completed';
-                document.getElementById(`ad-action-${adId}`).classList.add('completed');
-                document.getElementById(`ad-action-${adId}`).disabled = true;
-                
-                showToast(`Monetag ad completed! You earned ${ad.reward} AMD!`);
-                
-                // You can add your custom reward logic here
-                alert('You have seen an ad! Reward: ' + ad.reward + ' AMD');
-            }).catch((error) => {
-                console.error('Monetag ad failed:', error);
-                showToast('Ad failed to load. Please try again.');
-            });
-        } else {
-            showToast('Ad network not loaded. Please try again.');
+                // Simulate ad watching with progress
+                let progress = 0;
+                const ad = ads.find(a => a.id === adId);
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    showToast(`Դիտվում է գովազդը... ${progress}%`);
+                    
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                        
+                        // Credit user after ad completion (in AMD)
+                        userData.balance += ad.reward;
+                        userData.adsWatched += 1;
+                        userData.adsWatchedToday += 1;
+                        userData.totalEarned += ad.reward;
+                        updateUI();
+                        saveUserData();
+                        
+                        // Mark ad as completed
+                        document.getElementById(`ad-${adId}`).classList.add('disabled');
+                        document.getElementById(`ad-action-${adId}`).textContent = 'Ավարտված';
+                        document.getElementById(`ad-action-${adId}`).classList.add('completed');
+                        document.getElementById(`ad-action-${adId}`).disabled = true;
+                        
+                        showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
+                    }
+                }, 300);
+            } else {
+                showToast('Գովազդային ցանցը չի բեռնվել։ Խնդրում ենք նորից փորձել։');
+            }
         }
-    } else {
-        // Regular ad logic (your existing code)
-        if (typeof monetag !== 'undefined') {
-            monetag('send', 'event', 'ad_watch_triggered');
-            showToast('Ad loading... Please wait!');
-            
-            // Simulate ad watching with progress
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 10;
-                showToast(`Watching ad... ${progress}%`);
-                
-                if (progress >= 100) {
-                    clearInterval(progressInterval);
-                    
-                    // Credit user after ad completion (in AMD)
-                    userData.balance += ad.reward;
-                    userData.adsWatched += 1;
-                    userData.adsWatchedToday += 1;
-                    userData.totalEarned += ad.reward;
-                    updateUI();
-                    saveUserData();
-                    
-                    // Mark ad as completed
-                    document.getElementById(`ad-${adId}`).classList.add('disabled');
-                    document.getElementById(`ad-action-${adId}`).textContent = 'Completed';
-                    document.getElementById(`ad-action-${adId}`).classList.add('completed');
-                    document.getElementById(`ad-action-${adId}`).disabled = true;
-                    
-                    showToast(`Ad completed! You earned ${ad.reward} AMD!`);
-                }
-            }, 300);
-        } else {
-            showToast('Ad network not loaded. Please try again.');
-        }
-    }
-}
 
         function loadMonetagNativeAds() {
             if (typeof monetag !== 'undefined') {
@@ -1181,18 +1154,6 @@ function showMonetagAd(adId) {
                     height: 250
                 });
             }
-        }
-
-        // Load more ads (refresh)
-        function loadMoreAds() {
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            loadingIndicator.style.display = 'block';
-            
-            setTimeout(() => {
-                renderAds();
-                loadingIndicator.style.display = 'none';
-                showToast('Ads refreshed!');
-            }, 1000);
         }
 
         // Render ads to grid
@@ -1210,14 +1171,14 @@ function showMonetagAd(adId) {
                     </div>
                     <div class="ad-title">${ad.title}</div>
                     <div class="ad-reward">
-                        <i class="fas fa-coins"></i> +${ad.reward} AMD
+                        <i class="fas fa-coins"></i> +${ad.reward} Դրամ
                     </div>
                     <div class="ad-duration">${ad.duration}</div>
                     <button class="ad-action ${isCompleted ? 'completed' : ''}" 
                             id="ad-action-${ad.id}"
                             ${isCompleted ? 'disabled' : ''}
                             onclick="showMonetagAd(${ad.id})">
-                        ${isCompleted ? 'Completed' : 'Watch Ad'}
+                        ${isCompleted ? 'Ավարտված' : 'Դիտել Գովազդ'}
                     </button>
                 `;
                 
@@ -1230,7 +1191,7 @@ function showMonetagAd(adId) {
             navigator.clipboard.writeText(userData.referralLink).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 const originalText = btn.textContent;
-                btn.textContent = 'Copied!';
+                btn.textContent = 'Պատճենված։';
                 btn.style.background = 'var(--accent)';
                 
                 setTimeout(() => {
@@ -1238,7 +1199,7 @@ function showMonetagAd(adId) {
                     btn.style.background = 'white';
                 }, 2000);
                 
-                showToast('Referral link copied to clipboard!');
+                showToast('Ուղղորդման հղումը պատճենվեց։');
             });
         }
 
@@ -1309,21 +1270,6 @@ function showMonetagAd(adId) {
             return false;
         }
 
-        function validateCvv(input) {
-            const cvv = input.value;
-            const cvvError = document.getElementById('cvvError');
-            
-            if (cvv.length === 3 && /^\d+$/.test(cvv)) {
-                cvvError.style.display = 'none';
-                input.classList.remove('error');
-                return true;
-            } else {
-                cvvError.style.display = 'block';
-                input.classList.add('error');
-                return false;
-            }
-        }
-
         function validateWithdrawalAmount() {
             const amount = parseInt(document.getElementById('withdrawAmount').value) || 0;
             const amountError = document.getElementById('amountError');
@@ -1345,18 +1291,17 @@ function showMonetagAd(adId) {
             const cardExpiry = document.getElementById('cardExpiry').value;
             
             document.getElementById('cardPreview').textContent = cardNumber || '**** **** **** ****';
-            document.getElementById('namePreview').textContent = cardName || 'YOUR NAME';
-            document.getElementById('expiryPreview').textContent = cardExpiry || 'MM/YY';
+            document.getElementById('namePreview').textContent = cardName || 'ՁԵՐ ԱՆՈՒՆԸ';
+            document.getElementById('expiryPreview').textContent = cardExpiry || 'ԱԱ/ՏՏ';
         }
 
         function checkWithdrawalForm() {
             const isCardValid = validateCardNumber();
             const isExpiryValid = validateExpiry();
-            const isCvvValid = document.getElementById('cardCvv').value.length === 3;
             const isAmountValid = validateWithdrawalAmount();
             const hasName = document.getElementById('cardName').value.trim().length > 0;
             
-            if (isCardValid && isExpiryValid && isCvvValid && isAmountValid && hasName) {
+            if (isCardValid && isExpiryValid && isAmountValid && hasName) {
                 withdrawBtn.disabled = false;
             } else {
                 withdrawBtn.disabled = true;
@@ -1368,17 +1313,17 @@ function showMonetagAd(adId) {
             const withdrawAmount = parseInt(document.getElementById('withdrawAmount').value) || 0;
             
             if (withdrawAmount < 100000) {
-                showToast('Minimum withdrawal is 100,000 AMD');
+                showToast('Նվազագույն դուրս գրումը 100,000 Դրամ է');
                 return;
             }
             
             if (withdrawAmount > userData.balance) {
-                showToast('Insufficient AMD balance');
+                showToast('Բավարար դրամ չկա հաշվում');
                 return;
             }
             
             // Show processing message
-            showToast('Processing withdrawal to your Visa card...');
+            showToast('Դուրս գրումը մշակվում է ձեր Visa քարտին...');
             
             // Simulate processing delay
             setTimeout(() => {
@@ -1390,12 +1335,11 @@ function showMonetagAd(adId) {
                 document.getElementById('cardNumber').value = '';
                 document.getElementById('cardName').value = '';
                 document.getElementById('cardExpiry').value = '';
-                document.getElementById('cardCvv').value = '';
                 document.getElementById('withdrawAmount').value = '';
                 updateCardPreview();
                 checkWithdrawalForm();
                 
-                showToast(`Success! ${withdrawAmount.toLocaleString()} AMD will be transferred to your Visa card within 3-5 business days.`);
+                showToast(`Հաջողությամբ։ ${withdrawAmount.toLocaleString()} Դրամ կտեղափոխվի ձեր Visa քարտ 3-5 աշխատանքային օրվա ընթացքում։`);
             }, 3000);
         }
 
@@ -1404,21 +1348,21 @@ function showMonetagAd(adId) {
             document.getElementById('balanceAmount').textContent = userData.balance.toLocaleString();
             document.getElementById('adsWatched').textContent = userData.adsWatchedToday;
             document.getElementById('referralsCount').textContent = userData.referrals;
-            document.getElementById('totalEarned').textContent = userData.totalEarned.toLocaleString() + ' AMD';
+            document.getElementById('totalEarned').textContent = userData.totalEarned.toLocaleString() + ' Դրամ';
             
             document.getElementById('referralLink').textContent = userData.referralLink;
             document.getElementById('referralFriends').textContent = userData.referrals;
-            document.getElementById('referralPoints').textContent = (userData.referrals * 100).toLocaleString() + ' AMD';
-            document.getElementById('referralEarned').textContent = (userData.referrals * 100).toLocaleString() + ' AMD';
+            document.getElementById('referralPoints').textContent = (userData.referrals * 1000).toLocaleString() + ' Դրամ';
+            document.getElementById('referralEarned').textContent = (userData.referrals * 1000).toLocaleString() + ' Դրամ';
             
             // Update daily progress
             const progressPercentage = (userData.adsWatchedToday / 10) * 100;
-            document.getElementById('dailyProgress').textContent = `${userData.adsWatchedToday}/10 ads watched`;
+            document.getElementById('dailyProgress').textContent = `${userData.adsWatchedToday}/10 գովազդ դիտված`;
             document.getElementById('progressFillBar').style.width = `${progressPercentage}%`;
             document.getElementById('progressText').textContent = 
                 userData.adsWatchedToday >= 10 ? 
-                'Daily limit reached! Come back tomorrow.' : 
-                'Watch ads to earn AMD. Daily limit: 10 ads';
+                'Օրական սահմանաչափը լրացված է։ Վերադարձեք վաղը։' : 
+                'Դիտեք գովազդներ դրամ ստանալու համար։ Օրական սահմանաչափ՝ 10 գովազդ';
 
             // Show welcome bonus for new users who haven't claimed it
             if (!userData.welcomeBonusClaimed && userData.totalEarned === 0) {
@@ -1437,7 +1381,6 @@ function showMonetagAd(adId) {
             document.getElementById('cardNumber').addEventListener('input', checkWithdrawalForm);
             document.getElementById('cardName').addEventListener('input', checkWithdrawalForm);
             document.getElementById('cardExpiry').addEventListener('input', checkWithdrawalForm);
-            document.getElementById('cardCvv').addEventListener('input', checkWithdrawalForm);
             document.getElementById('withdrawAmount').addEventListener('input', checkWithdrawalForm);
             
             // Add animations
