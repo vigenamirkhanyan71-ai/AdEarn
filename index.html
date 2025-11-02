@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="hy">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AdEarn - Դիտեք Գովազդներ և Ստացեք Դրամ</title>
+    <title>AdEarn - Watch Ads and Earn Money</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
@@ -78,9 +78,9 @@
 
         .user-info {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
+            gap: 12px;
         }
 
         .user-avatar {
@@ -93,6 +93,7 @@
             justify-content: center;
             font-size: 20px;
             border: 2px solid rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
         }
 
         .user-name {
@@ -127,6 +128,14 @@
             font-size: 32px;
             font-weight: 700;
             margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ruble-icon {
+            font-size: 24px;
+            opacity: 0.9;
         }
 
         .balance-stats {
@@ -141,11 +150,34 @@
         .stat-value {
             font-size: 18px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
 
         .stat-label {
             font-size: 12px;
             opacity: 0.8;
+        }
+
+        /* Language Switcher */
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .language-switcher:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         /* Footer Navigation */
@@ -390,6 +422,10 @@
             position: relative;
             z-index: 2;
             color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .claim-bonus-btn {
@@ -518,6 +554,10 @@
             line-height: 1.4;
         }
 
+        .info-line {
+            margin-bottom: 4px;
+        }
+
         /* Withdrawal Section */
         .withdrawal-container {
             background: rgba(255, 255, 255, 0.05);
@@ -526,47 +566,9 @@
             margin-bottom: 24px;
         }
 
-        .payment-methods {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .payment-method {
-            flex: 1;
-            min-width: 100px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid transparent;
-            border-radius: 12px;
-            padding: 15px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .payment-method.active {
-            background: rgba(99, 102, 241, 0.2);
-            border-color: var(--primary);
-        }
-
-        .payment-method:hover {
-            transform: translateY(-2px);
-        }
-
-        .payment-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .payment-name {
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* Payment Method Specific Styles */
-        .telcell-card {
-            background: linear-gradient(135deg, #FF0000, #CC0000);
+        /* Qiwi Card Preview */
+        .qiwi-card {
+            background: linear-gradient(135deg, #ff8c00, #ff5500);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
@@ -575,22 +577,12 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .idram-card {
-            background: linear-gradient(135deg, #FF6B00, #FF8C00);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .idram-logo, .telcell-logo {
+        .qiwi-logo {
             text-align: right;
             margin-bottom: 20px;
         }
 
-        .idram-logo i, .telcell-logo i {
+        .qiwi-logo i {
             font-size: 40px;
             color: white;
         }
@@ -752,10 +744,6 @@
             .ads-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .payment-methods {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
@@ -768,28 +756,39 @@
                     <div class="user-avatar">
                         <i class="fas fa-user"></i>
                     </div>
-                    <div class="user-name" id="userName">Օգտատեր</div>
+                    <div class="user-name" id="userName"></div>
                 </div>
                 
                 <div class="app-title">AdEarn</div>
                 
                 <div class="balance-card">
-                    <div class="balance-label">Ձեր Հաշիվը</div>
-                    <div class="balance-amount" id="balanceAmount">0 <span style="font-size: 18px; opacity: 0.8;">Դրամ</span></div>
+                    <div class="balance-label" data-en="Your Balance" data-ru="Ваш Баланс"></div>
+                    <div class="balance-amount" id="balanceAmount">
+                        <span id="balanceValue">0</span>
+                        <span class="ruble-icon">₽</span>
+                    </div>
                     <div class="balance-stats">
                         <div class="stat-item">
                             <div class="stat-value" id="adsWatched">0</div>
-                            <div class="stat-label">Գովազդներ Այսօր</div>
+                            <div class="stat-label" data-en="Ads Today" data-ru="Рекламы Сегодня"></div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="referralsCount">0</div>
-                            <div class="stat-label">Ուղղորդումներ</div>
+                            <div class="stat-label" data-en="Referrals" data-ru="Рефералы"></div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="totalEarned">0 Դրամ</div>
-                            <div class="stat-label">Ստացված</div>
+                            <div class="stat-value" id="totalEarned">
+                                <span id="totalEarnedValue">0</span>
+                                <span class="ruble-icon">₽</span>
+                            </div>
+                            <div class="stat-label" data-en="Total Earned" data-ru="Заработано"></div>
                         </div>
                     </div>
+                </div>
+                
+                <!-- Language Switcher -->
+                <div class="language-switcher" onclick="toggleLanguage()">
+                    <span id="languageText">EN</span>
                 </div>
             </div>
         </div>
@@ -798,28 +797,29 @@
         <div class="main-content">
             <!-- Ads Section -->
             <div class="section" id="ads-section">
-                <div class="section-title">
-                    Դիտեք Գովազդներ և Ստացեք Դրամ
-                </div>
+                <div class="section-title" data-en="Watch Ads and Earn Money" data-ru="Смотрите Рекламу и Зарабатывайте Деньги"></div>
                 
                 <!-- Welcome Bonus -->
                 <div class="welcome-bonus" id="welcomeBonus" style="display: none;">
-                    <div class="welcome-title">🎉 Բարի Գալուստ Բոնուս! 🎉</div>
-                    <div class="welcome-desc">Որպես նոր օգտատեր, ստացեք ձեր 7000 Դրամ բոնուսը</div>
-                    <div class="welcome-bonus-amount">7,000 Դրամ</div>
-                    <button class="claim-bonus-btn" onclick="claimWelcomeBonus()">Ստանալ Բոնուս</button>
+                    <div class="welcome-title" data-en="🎉 Welcome Bonus! 🎉" data-ru="🎉 Добро Пожаловать Бонус! 🎉"></div>
+                    <div class="welcome-desc" data-en="As a new user, get your 500 RUB bonus" data-ru="Как новый пользователь, получите свой бонус 500 Рублей"></div>
+                    <div class="welcome-bonus-amount">
+                        500
+                        <span class="ruble-icon">₽</span>
+                    </div>
+                    <button class="claim-bonus-btn" onclick="claimWelcomeBonus()" data-en="Claim Bonus" data-ru="Получить Бонус"></button>
                 </div>
                 
                 <!-- Daily Progress -->
                 <div class="daily-progress">
                     <div class="progress-header">
-                        <div class="progress-title">Օրական Պրոգրես</div>
-                        <div class="progress-count" id="dailyProgress">0/10 գովազդ դիտված</div>
+                        <div class="progress-title" data-en="Daily Progress" data-ru="Ежедневный Прогресс"></div>
+                        <div class="progress-count" id="dailyProgress"></div>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFillBar"></div>
                     </div>
-                    <div class="progress-text" id="progressText">Դիտեք գովազդներ դրամ ստանալու համար: Յուրաքանչյուր գովազդ կարելի է դիտել օրական մեկ անգամ</div>
+                    <div class="progress-text" id="progressText"></div>
                 </div>
                 
                 <!-- Ads Grid -->
@@ -830,28 +830,32 @@
 
             <!-- Referral Section -->
             <div class="section" id="referrals-section" style="display: none;">
-                <div class="section-title">
-                    Ուղղորդեք և Ստացեք Դրամ
-                </div>
+                <div class="section-title" data-en="Invite Friends and Earn" data-ru="Приглашайте Друзей и Зарабатывайте"></div>
                 <div class="referral-card">
-                    <div class="referral-title">Հրավիրեք Ընկերներին</div>
-                    <div class="referral-desc">Կիսվեք ձեր հղումով և ստացեք 1000 Դրամ յուրաքանչյուր ընկերոջ համար</div>
+                    <div class="referral-title" data-en="Invite Friends" data-ru="Пригласите Друзей"></div>
+                    <div class="referral-desc" data-en="Share your link and get 250 RUB for each friend" data-ru="Поделитесь своей ссылкой и получите 250 Рублей за каждого друга"></div>
                     <div class="referral-link-container">
-                        <div class="referral-link" id="referralLink">Բեռնվում է...</div>
-                        <button class="copy-btn" onclick="copyReferralLink()">Պատճենել</button>
+                        <div class="referral-link" id="referralLink"></div>
+                        <button class="copy-btn" onclick="copyReferralLink()" data-en="Copy" data-ru="Копировать"></button>
                     </div>
                     <div class="referral-stats">
                         <div class="stat-item">
                             <div class="stat-value" id="referralFriends">0</div>
-                            <div class="stat-label">Ընկերներ</div>
+                            <div class="stat-label" data-en="Friends" data-ru="Друзья"></div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="referralPoints">0 Դրամ</div>
-                            <div class="stat-label">Ստացված</div>
+                            <div class="stat-value" id="referralPoints">
+                                <span id="referralPointsValue">0</span>
+                                <span class="ruble-icon">₽</span>
+                            </div>
+                            <div class="stat-label" data-en="Earned" data-ru="Заработано"></div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="referralEarned">0 Դրամ</div>
-                            <div class="stat-label">Ընդհանուր</div>
+                            <div class="stat-value" id="referralEarned">
+                                <span id="referralEarnedValue">0</span>
+                                <span class="ruble-icon">₽</span>
+                            </div>
+                            <div class="stat-label" data-en="Total" data-ru="Всего"></div>
                         </div>
                     </div>
                 </div>
@@ -860,13 +864,13 @@
                 <div class="referral-info">
                     <div class="info-title">
                         <i class="fas fa-info-circle"></i>
-                        Ուղղորդման Մանրամասներ
+                        <span data-en="Referral Program Details" data-ru="Детали Реферальной Программы"></span>
                     </div>
                     <div class="info-text">
-                        • Ձեր ուղղորդած յուրաքանչյուր ընկեր ստանում է 7000 Դրամ բոնուս<br>
-                        • Դուք ստանում եք 1000 Դրամ ձեր ուղղորդած յուրաքանչյուր ընկերոջ համար<br>
-                        • Ձեր ուղղորդած ընկերները կցուցադրվեն այստեղ իրենց Telegram անուններով<br>
-                        • Ուղղորդումները հաշվառվում են միայն այն դեպքում, եթե ընկերը ակտիվ է
+                        <div class="info-line" data-en="• Each invited friend gets a 500 RUB bonus" data-ru="• Каждый приглашенный друг получает бонус 500 Рублей"></div>
+                        <div class="info-line" data-en="• You get 250 RUB for each invited friend" data-ru="• Вы получаете 250 Рублей за каждого приглашенного друга"></div>
+                        <div class="info-line" data-en="• Your invited friends will be displayed here with their Telegram names" data-ru="• Ваши приглашенные друзья будут отображаться здесь с их Telegram именами"></div>
+                        <div class="info-line" data-en="• Referrals count only if the friend is active" data-ru="• Рефералы учитываются только если друг активен"></div>
                     </div>
                 </div>
 
@@ -874,25 +878,23 @@
                 <div class="referral-info" id="referralsList" style="display: none;">
                     <div class="info-title">
                         <i class="fas fa-users"></i>
-                        Ձեր Ուղղորդած Ընկերները
+                        <span data-en="Your Invited Friends" data-ru="Ваши Приглашенные Друзья"></span>
                     </div>
-                    <div class="info-text" id="referralsListContent">
-                        <!-- Referrals will be listed here -->
-                    </div>
+                    <div class="info-text" id="referralsListContent"></div>
                 </div>
 
                 <!-- Share Buttons -->
                 <div class="referral-info">
                     <div class="info-title">
                         <i class="fas fa-share-alt"></i>
-                        Կիսվել Հղումով
+                        <span data-en="Share Link" data-ru="Поделиться Ссылкой"></span>
                     </div>
                     <div style="display: flex; gap: 10px; margin-top: 10px;">
                         <button class="copy-btn" onclick="shareToTelegram()" style="flex: 1;">
-                            <i class="fab fa-telegram"></i> Telegram
+                            <i class="fab fa-telegram"></i> <span data-en="Telegram" data-ru="Telegram"></span>
                         </button>
                         <button class="copy-btn" onclick="shareToWhatsApp()" style="flex: 1;">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
+                            <i class="fab fa-whatsapp"></i> <span data-en="WhatsApp" data-ru="WhatsApp"></span>
                         </button>
                     </div>
                 </div>
@@ -900,91 +902,44 @@
 
             <!-- Withdraw Section -->
             <div class="section" id="withdraw-section" style="display: none;">
-                <div class="section-title">
-                    Դուրս գրեք Դրամ
-                </div>
+                <div class="section-title" data-en="Withdraw Funds" data-ru="Вывод Средств"></div>
                 
                 <div class="withdrawal-container">
-                    <!-- Payment Methods -->
-                    <div class="payment-methods">
-                        <div class="payment-method active" data-method="telcell" onclick="selectPaymentMethod('telcell')">
-                            <div class="payment-icon">
-                                <i class="fas fa-mobile-alt"></i>
-                            </div>
-                            <div class="payment-name">Telcell</div>
-                        </div>
-                        <div class="payment-method" data-method="idram" onclick="selectPaymentMethod('idram')">
-                            <div class="payment-icon">
-                                <i class="fas fa-wallet"></i>
-                            </div>
-                            <div class="payment-name">Idram</div>
-                        </div>
-                    </div>
-
-                    <!-- Telcell Card Preview -->
-                    <div class="telcell-card" id="telcellPreview">
-                        <div class="telcell-logo">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <div class="card-number" id="telcellId">Telcell ID</div>
-                        <div class="card-details">
-                            <div class="card-holder">
-                                <div class="card-label">Telcell ID</div>
-                                <div id="telcellName">ՁԵՌ TELCELL ID-N</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Idram Card Preview -->
-                    <div class="idram-card" id="idramPreview" style="display: none;">
-                        <div class="idram-logo">
+                    <!-- Qiwi Card Preview -->
+                    <div class="qiwi-card" id="qiwiPreview">
+                        <div class="qiwi-logo">
                             <i class="fas fa-wallet"></i>
                         </div>
-                        <div class="card-number" id="idramId">IDram ID</div>
+                        <div class="card-number" id="qiwiId">QIWI ID</div>
                         <div class="card-details">
                             <div class="card-holder">
-                                <div class="card-label">Idram ID</div>
-                                <div id="idramName">ՁԵՐ IDRAM ID-N</div>
+                                <div class="card-label" data-en="QIWI ID" data-ru="QIWI ID"></div>
+                                <div id="qiwiName" data-en="YOUR QIWI ID" data-ru="ВАШ QIWI ID"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Withdrawal Form -->
                     <div class="withdraw-form">
-                        <div class="form-group" id="telcellForm">
-                            <label class="form-label">Telcell ID</label>
-                            <input type="text" class="form-input" id="telcellInput" 
-                                   placeholder="Ձեր Telcell ID" 
-                                   oninput="updateTelcellPreview()" onblur="validateTelcellId()">
-                            <div class="form-hint">Մուտքագրեք ձեր Telcell ID-ն</div>
-                            <div id="telcellError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
-                                Մուտքագրեք վավեր Telcell ID
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="idramForm" style="display: none;">
-                            <label class="form-label">Idram ID</label>
-                            <input type="text" class="form-input" id="idramInput" 
-                                   placeholder="Ձեր Idram ID" 
-                                   oninput="updateIdramPreview()" onblur="validateIdramId()">
-                            <div class="form-hint">Մուտքագրեք ձեր Idram ID-ն</div>
-                            <div id="idramError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
-                                Մուտքագրեք վավեր Idram ID
-                            </div>
+                        <div class="form-group" id="qiwiForm">
+                            <label class="form-label" data-en="QIWI ID" data-ru="QIWI ID"></label>
+                            <input type="text" class="form-input" id="qiwiInput" 
+                                   placeholder="" 
+                                   oninput="updateQiwiPreview()" onblur="validateQiwiId()">
+                            <div class="form-hint" data-en="Enter your QIWI ID" data-ru="Введите ваш QIWI ID"></div>
+                            <div id="qiwiError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;" data-en="Enter a valid QIWI ID" data-ru="Введите действительный QIWI ID"></div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Դուրս գրման գումար</label>
+                            <label class="form-label" data-en="Withdrawal Amount" data-ru="Сумма для вывода"></label>
                             <input type="number" class="form-input" id="withdrawAmount" 
-                                   placeholder="100000" min="100000" oninput="validateWithdrawalAmount()">
-                            <div class="form-hint">Նվազագույն դուրս գրում՝ 100,000 Դրամ</div>
-                            <div id="amountError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;">
-                                Նվազագույն դուրս գրման գումարը 100,000 Դրամ է
-                            </div>
+                                   placeholder="5000" min="5000" oninput="validateWithdrawalAmount()">
+                            <div class="form-hint" data-en="Minimum withdrawal: 5,000 RUB" data-ru="Минимальный вывод: 5,000 Рублей"></div>
+                            <div id="amountError" style="color: var(--danger); font-size: 12px; margin-top: 4px; display: none;" data-en="Minimum withdrawal amount is 5,000 RUB" data-ru="Минимальная сумма вывода 5,000 Рублей"></div>
                         </div>
 
                         <button class="withdraw-btn" id="withdrawBtn" onclick="processWithdrawal()" disabled>
-                            Դուրս գրել Դրամ
+                            <span data-en="Withdraw Funds" data-ru="Вывести Средства"></span>
                         </button>
                     </div>
 
@@ -992,14 +947,14 @@
                     <div class="withdrawal-info">
                         <div class="info-title">
                             <i class="fas fa-info-circle"></i>
-                            Կարևոր Տեղեկատվություն
+                            <span data-en="Important Information" data-ru="Важная Информация"></span>
                         </div>
                         <div class="info-text">
-                            • Նվազագույն դուրս գրում՝ 100,000 Դրամ<br>
-                            • Դուրս գրումները մշակվում են 24 ժամվա ընթացքում<br>
-                            • Կիրառվում է 0% մշակման վճար<br>
-                            • Ընդունվում են Telcell ID և Idram ID<br>
-                            • Օրական ստացեք 6,500 Դրամ բոլոր գովազդները դիտելուց
+                            <div class="info-line" data-en="• Minimum withdrawal: 5,000 RUB" data-ru="• Минимальный вывод: 5,000 Рублей"></div>
+                            <div class="info-line" data-en="• Withdrawals are processed within 24 hours" data-ru="• Выводы обрабатываются в течение 24 часов"></div>
+                            <div class="info-line" data-en="• Processing fee 0%" data-ru="• Комиссия за обработку 0%"></div>
+                            <div class="info-line" data-en="• QIWI Wallet accepted" data-ru="• Принимается QIWI Кошелек"></div>
+                            <div class="info-line" data-en="• Earn 330 RUB daily by watching all ads" data-ru="• Ежедневно зарабатывайте 330 Рублей за просмотр всех реклам"></div>
                         </div>
                     </div>
                 </div>
@@ -1011,15 +966,15 @@
             <div class="footer-tabs">
                 <div class="footer-tab active" onclick="switchTab('ads')">
                     <i class="fas fa-play-circle"></i>
-                    <span>Գովազդներ</span>
+                    <span data-en="Ads" data-ru="Реклама"></span>
                 </div>
                 <div class="footer-tab" onclick="switchTab('referrals')">
                     <i class="fas fa-users"></i>
-                    <span>Ուղղորդումներ</span>
+                    <span data-en="Referrals" data-ru="Рефералы"></span>
                 </div>
                 <div class="footer-tab" onclick="switchTab('withdraw')">
                     <i class="fas fa-wallet"></i>
-                    <span>Դուրս գրում</span>
+                    <span data-en="Withdraw" data-ru="Вывод"></span>
                 </div>
             </div>
         </div>
@@ -1029,6 +984,31 @@
     </div>
 
     <script>
+        // Language management
+        let currentLanguage = 'ru'; // Default language is Russian
+        
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ru' ? 'en' : 'ru';
+            updateLanguage();
+        }
+        
+        function updateLanguage() {
+            // Update all elements with data attributes
+            document.querySelectorAll('[data-ru]').forEach(element => {
+                if (currentLanguage === 'ru') {
+                    element.textContent = element.getAttribute('data-ru');
+                } else {
+                    element.textContent = element.getAttribute('data-en');
+                }
+            });
+            
+            // Update language switcher
+            document.getElementById('languageText').textContent = currentLanguage === 'ru' ? 'EN' : 'RU';
+            
+            // Update dynamic content
+            updateUI();
+        }
+
         // Telegram WebApp initialization
         let tg = window.Telegram.WebApp;
         tg.expand();
@@ -1051,30 +1031,27 @@
             referredUsers: [],
             todayWatchedAds: [],
             userId: null,
-            username: "Օգտատեր",
+            username: "",
             referredBy: null
         };
-
-        // Current payment method
-        let currentPaymentMethod = 'telcell';
 
         // Load user data from localStorage
         function loadUserData() {
             const saved = localStorage.getItem('adEarnUserData');
-            const today = new Date().toLocaleDateString('hy-AM');
+            const today = new Date().toLocaleDateString('ru-RU');
             
             // Get user info from Telegram
             let userId, userName;
             
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 userId = tg.initDataUnsafe.user.id.toString();
-                userName = tg.initDataUnsafe.user.first_name || "Օգտատեր";
+                userName = tg.initDataUnsafe.user.first_name || (currentLanguage === 'ru' ? "Пользователь" : "User");
                 if (tg.initDataUnsafe.user.username) {
                     userName = "@" + tg.initDataUnsafe.user.username;
                 }
             } else {
                 userId = "user_" + Math.random().toString(36).substr(2, 9);
-                userName = "Օգտատեր";
+                userName = currentLanguage === 'ru' ? "Пользователь" : "User";
             }
             
             // Check for referral parameter in URL
@@ -1152,6 +1129,11 @@
             document.getElementById('userName').textContent = userData.username;
             updateReferralDatabase();
             updateUI();
+            
+            // Show welcome bonus for all new users
+            if (!userData.welcomeBonusClaimed) {
+                document.getElementById('welcomeBonus').style.display = 'block';
+            }
         }
 
         // Process referral bonus
@@ -1167,16 +1149,18 @@
                     referralDatabase[referrerId].referrals.push({
                         userId: referredUserId,
                         username: referredUserName,
-                        date: new Date().toLocaleDateString('hy-AM'),
+                        date: new Date().toLocaleDateString('ru-RU'),
                         bonusPaid: false
                     });
                     
                     // Give bonus to current user (referred user)
                     if (!userData.welcomeBonusClaimed) {
-                        userData.balance += 7000;
-                        userData.totalEarned += 7000;
+                        userData.balance += 500;
+                        userData.totalEarned += 500;
                         userData.welcomeBonusClaimed = true;
-                        showToast('🎉 Ստացաք 7000 Դրամ բոնուս ուղղորդման համար!');
+                        showToast(currentLanguage === 'ru' ? 
+                            '🎉 Вы получили 500 ₽ бонус за приглашение!' : 
+                            '🎉 You received 500 ₽ bonus for being invited!');
                     }
                     
                     updateReferralDatabase();
@@ -1207,7 +1191,8 @@
                 });
                 
                 if (newReferrals > 0) {
-                    const bonusAmount = newReferrals * 1000;
+                    // Changed from 1000 to 250 RUB per referral
+                    const bonusAmount = newReferrals * 250;
                     userData.balance += bonusAmount;
                     userData.referrals += newReferrals;
                     userData.totalEarned += bonusAmount;
@@ -1223,7 +1208,9 @@
                         }
                     });
                     
-                    showToast(`🎉 Ստացաք ${bonusAmount.toLocaleString()} Դրամ ${newReferrals} ուղղորդման համար!`);
+                    showToast(currentLanguage === 'ru' ? 
+                        `🎉 Вы получили ${bonusAmount.toLocaleString()} ₽ за ${newReferrals} приглашение(я)!` :
+                        `🎉 You received ${bonusAmount.toLocaleString()} ₽ for ${newReferrals} referral(s)!`);
                     saveUserData();
                     updateUI();
                 }
@@ -1237,18 +1224,18 @@
             localStorage.setItem('adEarnUserData', JSON.stringify(userData));
         }
 
-        // Ads data - 10 ads per day, total 6500 AMD
+        // Ads data - 10 ads per day, total 330 RUB (5000/15 ≈ 333 RUB per day)
         const ads = [
-            { id: 1, title: "Գովազդ 1", reward: 600, duration: "30վ", icon: "ad" },
-            { id: 2, title: "Գովազդ 2", reward: 620, duration: "25վ", icon: "ad" },
-            { id: 3, title: "Գովազդ 3", reward: 640, duration: "20վ", icon: "ad" },
-            { id: 4, title: "Գովազդ 4", reward: 660, duration: "35վ", icon: "ad" },
-            { id: 5, title: "Գովազդ 5", reward: 680, duration: "30վ", icon: "ad" },
-            { id: 6, title: "Գովազդ 6", reward: 700, duration: "40վ", icon: "ad" },
-            { id: 7, title: "Գովազդ 7", reward: 720, duration: "25վ", icon: "ad" },
-            { id: 8, title: "Գովազդ 8", reward: 740, duration: "30վ", icon: "ad" },
-            { id: 9, title: "Գովազդ 9", reward: 760, duration: "35վ", icon: "ad" },
-            { id: 10, title: "Գովազդ 10", reward: 780, duration: "45վ", icon: "ad" }
+            { id: 1, title: {ru: "Реклама 1", en: "Ad 1"}, reward: 33, duration: {ru: "30сек", en: "30sec"}, icon: "ad" },
+            { id: 2, title: {ru: "Реклама 2", en: "Ad 2"}, reward: 33, duration: {ru: "25сек", en: "25sec"}, icon: "ad" },
+            { id: 3, title: {ru: "Реклама 3", en: "Ad 3"}, reward: 33, duration: {ru: "20сек", en: "20sec"}, icon: "ad" },
+            { id: 4, title: {ru: "Реклама 4", en: "Ad 4"}, reward: 33, duration: {ru: "35сек", en: "35sec"}, icon: "ad" },
+            { id: 5, title: {ru: "Реклама 5", en: "Ad 5"}, reward: 33, duration: {ru: "30сек", en: "30sec"}, icon: "ad" },
+            { id: 6, title: {ru: "Реклама 6", en: "Ad 6"}, reward: 33, duration: {ru: "40сек", en: "40sec"}, icon: "ad" },
+            { id: 7, title: {ru: "Реклама 7", en: "Ad 7"}, reward: 33, duration: {ru: "25сек", en: "25sec"}, icon: "ad" },
+            { id: 8, title: {ru: "Реклама 8", en: "Ad 8"}, reward: 33, duration: {ru: "30сек", en: "30sec"}, icon: "ad" },
+            { id: 9, title: {ru: "Реклама 9", en: "Ad 9"}, reward: 33, duration: {ru: "35сек", en: "35sec"}, icon: "ad" },
+            { id: 10, title: {ru: "Реклама 10", en: "Ad 10"}, reward: 33, duration: {ru: "45сек", en: "45sec"}, icon: "ad" }
         ];
 
         // DOM Elements
@@ -1285,32 +1272,6 @@
             }
         }
 
-        // Select payment method
-        function selectPaymentMethod(method) {
-            currentPaymentMethod = method;
-            
-            // Update active state
-            document.querySelectorAll('.payment-method').forEach(el => {
-                el.classList.remove('active');
-            });
-            document.querySelector(`.payment-method[data-method="${method}"]`).classList.add('active');
-            
-            // Show/hide forms and previews
-            if (method === 'telcell') {
-                document.getElementById('telcellPreview').style.display = 'block';
-                document.getElementById('idramPreview').style.display = 'none';
-                document.getElementById('telcellForm').style.display = 'block';
-                document.getElementById('idramForm').style.display = 'none';
-            } else if (method === 'idram') {
-                document.getElementById('telcellPreview').style.display = 'none';
-                document.getElementById('idramPreview').style.display = 'block';
-                document.getElementById('telcellForm').style.display = 'none';
-                document.getElementById('idramForm').style.display = 'block';
-            }
-            
-            checkWithdrawalForm();
-        }
-
         // Update referrals list
         function updateReferralsList() {
             const referralsList = document.getElementById('referralsList');
@@ -1319,24 +1280,32 @@
             if (userData.referredUsers.length > 0) {
                 referralsList.style.display = 'block';
                 referralsListContent.innerHTML = userData.referredUsers.map((user, index) => 
-                    `${index + 1}. ${user.username} - ${user.date} - 1000 Դրամ`
+                    currentLanguage === 'ru' ? 
+                    `${index + 1}. ${user.username} - ${user.date} - 250 ₽` :
+                    `${index + 1}. ${user.username} - ${user.date} - 250 ₽`
                 ).join('<br>');
             } else {
                 referralsList.style.display = 'none';
-                referralsListContent.innerHTML = 'Դեռ ուղղորդումներ չունեք։ Կիսվեք ձեր հղումով ընկերների հետ։';
+                referralsListContent.innerHTML = currentLanguage === 'ru' ? 
+                    'У вас еще нет приглашенных пользователей. Поделитесь своей ссылкой с друзьями.' :
+                    'You don\'t have any invited users yet. Share your link with friends.';
             }
         }
 
         // Share to Telegram
         function shareToTelegram() {
-            const message = `Դիտեք գովազդներ և ստացեք դրամ AdEarn-ում։ Միացեք հիմա՝ ${userData.referralLink}`;
+            const message = currentLanguage === 'ru' ? 
+                `Смотрите рекламу и зарабатывайте деньги с AdEarn. Присоединяйтесь сейчас: ${userData.referralLink}` :
+                `Watch ads and earn money with AdEarn. Join now: ${userData.referralLink}`;
             const url = `https://t.me/share/url?url=${encodeURIComponent(userData.referralLink)}&text=${encodeURIComponent(message)}`;
             window.open(url, '_blank');
         }
 
         // Share to WhatsApp
         function shareToWhatsApp() {
-            const message = `Դիտեք գովազդներ և ստացեք դրամ AdEarn-ում։ Միացեք հիմա՝ ${userData.referralLink}`;
+            const message = currentLanguage === 'ru' ? 
+                `Смотрите рекламу и зарабатывайте деньги с AdEarn. Присоединяйтесь сейчас: ${userData.referralLink}` :
+                `Watch ads and earn money with AdEarn. Join now: ${userData.referralLink}`;
             const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
             window.open(url, '_blank');
         }
@@ -1344,63 +1313,47 @@
         // Claim welcome bonus
         function claimWelcomeBonus() {
             if (!userData.welcomeBonusClaimed) {
-                userData.balance += 7000;
-                userData.totalEarned += 7000;
+                userData.balance += 500;
+                userData.totalEarned += 500;
                 userData.welcomeBonusClaimed = true;
                 updateUI();
                 saveUserData();
                 
                 document.getElementById('welcomeBonus').style.display = 'none';
-                showToast('🎉 Բարի գալուստ բոնուսը 7,000 Դրամ ստացվեց!');
+                showToast(currentLanguage === 'ru' ? 
+                    '🎉 Бонус приветствия 500 ₽ получен!' :
+                    '🎉 Welcome bonus 500 ₽ received!');
             }
         }
 
-        // Update Telcell preview
-        function updateTelcellPreview() {
-            const telcellId = document.getElementById('telcellInput').value;
-            document.getElementById('telcellId').textContent = telcellId || 'Telcell ID';
-            document.getElementById('telcellName').textContent = telcellId || 'ՁԵՌ TELCELL ID-N';
-            validateTelcellId();
-            checkWithdrawalForm();
-        }
-
-        // Validate Telcell ID
-        function validateTelcellId() {
-            const telcellId = document.getElementById('telcellInput').value.trim();
-            const telcellError = document.getElementById('telcellError');
+        // Update Qiwi preview
+        function updateQiwiPreview() {
+            const qiwiId = document.getElementById('qiwiInput').value;
+            document.getElementById('qiwiId').textContent = qiwiId || 'QIWI ID';
             
-            if (telcellId.length >= 3) {
-                telcellError.style.display = 'none';
-                document.getElementById('telcellInput').classList.remove('error');
-                return true;
+            const qiwiNameElement = document.getElementById('qiwiName');
+            if (qiwiId) {
+                qiwiNameElement.textContent = qiwiId;
             } else {
-                telcellError.style.display = 'block';
-                document.getElementById('telcellInput').classList.add('error');
-                return false;
+                qiwiNameElement.textContent = currentLanguage === 'ru' ? 'ВАШ QIWI ID' : 'YOUR QIWI ID';
             }
-        }
-
-        // Update Idram preview
-        function updateIdramPreview() {
-            const idramId = document.getElementById('idramInput').value;
-            document.getElementById('idramId').textContent = idramId || 'IDram ID';
-            document.getElementById('idramName').textContent = idramId || 'ՁԵՐ IDRAM ID-N';
-            validateIdramId();
+            
+            validateQiwiId();
             checkWithdrawalForm();
         }
 
-        // Validate Idram ID
-        function validateIdramId() {
-            const idramId = document.getElementById('idramInput').value.trim();
-            const idramError = document.getElementById('idramError');
+        // Validate Qiwi ID
+        function validateQiwiId() {
+            const qiwiId = document.getElementById('qiwiInput').value.trim();
+            const qiwiError = document.getElementById('qiwiError');
             
-            if (idramId.length >= 3) {
-                idramError.style.display = 'none';
-                document.getElementById('idramInput').classList.remove('error');
+            if (qiwiId.length >= 3) {
+                qiwiError.style.display = 'none';
+                document.getElementById('qiwiInput').classList.remove('error');
                 return true;
             } else {
-                idramError.style.display = 'block';
-                document.getElementById('idramInput').classList.add('error');
+                qiwiError.style.display = 'block';
+                document.getElementById('qiwiInput').classList.add('error');
                 return false;
             }
         }
@@ -1410,7 +1363,7 @@
             const amount = parseInt(document.getElementById('withdrawAmount').value) || 0;
             const amountError = document.getElementById('amountError');
             
-            if (amount >= 100000) {
+            if (amount >= 5000) {
                 amountError.style.display = 'none';
                 document.getElementById('withdrawAmount').classList.remove('error');
                 return true;
@@ -1425,11 +1378,7 @@
         function checkWithdrawalForm() {
             let isValid = false;
             
-            if (currentPaymentMethod === 'telcell') {
-                isValid = validateTelcellId() && validateWithdrawalAmount();
-            } else if (currentPaymentMethod === 'idram') {
-                isValid = validateIdramId() && validateWithdrawalAmount();
-            }
+            isValid = validateQiwiId() && validateWithdrawalAmount();
             
             if (isValid) {
                 document.getElementById('withdrawBtn').disabled = false;
@@ -1442,24 +1391,23 @@
         function processWithdrawal() {
             const withdrawAmount = parseInt(document.getElementById('withdrawAmount').value) || 0;
             
-            if (withdrawAmount < 100000) {
-                showToast('Նվազագույն դուրս գրումը 100,000 Դրամ է');
+            if (withdrawAmount < 5000) {
+                showToast(currentLanguage === 'ru' ? 
+                    'Минимальная сумма вывода 5,000 ₽' :
+                    'Minimum withdrawal amount is 5,000 ₽');
                 return;
             }
             
             if (withdrawAmount > userData.balance) {
-                showToast('Բավարար դրամ չկա հաշվում');
+                showToast(currentLanguage === 'ru' ? 
+                    'Недостаточно средств на счете' :
+                    'Insufficient funds in account');
                 return;
             }
             
-            let methodName = '';
-            if (currentPaymentMethod === 'telcell') {
-                methodName = 'Telcell';
-            } else if (currentPaymentMethod === 'idram') {
-                methodName = 'Idram';
-            }
-            
-            showToast(`Դուրս գրումը մշակվում է ձեր ${methodName} հաշվին...`);
+            showToast(currentLanguage === 'ru' ? 
+                `Запрос на вывод обрабатывается на ваш QIWI счет...` :
+                `Withdrawal request is being processed to your QIWI account...`);
             
             setTimeout(() => {
                 userData.balance -= withdrawAmount;
@@ -1467,14 +1415,14 @@
                 saveUserData();
                 
                 // Clear form
-                document.getElementById('telcellInput').value = '';
-                document.getElementById('idramInput').value = '';
+                document.getElementById('qiwiInput').value = '';
                 document.getElementById('withdrawAmount').value = '';
-                updateTelcellPreview();
-                updateIdramPreview();
+                updateQiwiPreview();
                 checkWithdrawalForm();
                 
-                showToast(`Հաջողությամբ։ ${withdrawAmount.toLocaleString()} Դրամ կտեղափոխվի ձեր ${methodName} հաշիվ 24 ժամվա ընթացքում։`);
+                showToast(currentLanguage === 'ru' ? 
+                    `Успешно! ${withdrawAmount.toLocaleString()} ₽ будет переведено на ваш QIWI счет в течение 24 часов.` :
+                    `Success! ${withdrawAmount.toLocaleString()} ₽ will be transferred to your QIWI account within 24 hours.`);
             }, 3000);
         }
 
@@ -1485,21 +1433,29 @@
 
             // Check if ad was already watched today
             if (userData.todayWatchedAds.includes(adId)) {
-                showToast('Այս գովազդն արդեն դիտել եք այսօր։ Վերադարձեք վաղը։');
+                showToast(currentLanguage === 'ru' ? 
+                    'Вы уже посмотрели эту рекламу сегодня. Вернитесь завтра.' :
+                    'You have already watched this ad today. Come back tomorrow.');
                 return;
             }
 
-            showToast('Գովազդը բեռնվում է... Խնդրում ենք սպասել։');
+            showToast(currentLanguage === 'ru' ? 
+                'Реклама загружается... Пожалуйста, подождите.' :
+                'Ad is loading... Please wait.');
 
             // Use Rewarded interstitial for ads 1, 4, 5, 8, 9
             if ([1, 4, 5, 8, 9].includes(adId)) {
                 if (typeof show_10120830 !== 'undefined') {
                     show_10120830().then(() => {
                         creditUserForAd(adId);
-                        showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
+                        showToast(currentLanguage === 'ru' ? 
+                            `Реклама завершена. Вы получили ${ad.reward} ₽.` :
+                            `Ad completed. You received ${ad.reward} ₽.`);
                     }).catch((error) => {
                         console.error('Ad failed to load:', error);
-                        showToast('Գովազդը բեռնվում չէ։ Նորից փորձեք։');
+                        showToast(currentLanguage === 'ru' ? 
+                            'Не удалось загрузить рекламу. Попробуйте снова.' :
+                            'Failed to load ad. Please try again.');
                     });
                 } else {
                     // Fallback simulation if ad system not loaded
@@ -1511,10 +1467,14 @@
                 if (typeof show_10120830 !== 'undefined') {
                     show_10120830('pop').then(() => {
                         creditUserForAd(adId);
-                        showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
+                        showToast(currentLanguage === 'ru' ? 
+                            `Реклама завершена. Вы получили ${ad.reward} ₽.` :
+                            `Ad completed. You received ${ad.reward} ₽.`);
                     }).catch((error) => {
                         console.error('Ad failed to load:', error);
-                        showToast('Գովազդը բեռնվում չէ։ Նորից փորձեք։');
+                        showToast(currentLanguage === 'ru' ? 
+                            'Не удалось загрузить рекламу. Попробуйте снова.' :
+                            'Failed to load ad. Please try again.');
                     });
                 } else {
                     // Fallback simulation if ad system not loaded
@@ -1531,12 +1491,16 @@
             let progress = 0;
             const progressInterval = setInterval(() => {
                 progress += 10;
-                showToast(`Դիտվում է գովազդը... ${progress}%`);
+                showToast(currentLanguage === 'ru' ? 
+                    `Просмотр рекламы... ${progress}%` :
+                    `Watching ad... ${progress}%`);
                 
                 if (progress >= 100) {
                     clearInterval(progressInterval);
                     creditUserForAd(adId);
-                    showToast(`Գովազդն ավարտված է։ Դուք ստացաք ${ad.reward} Դրամ։`);
+                    showToast(currentLanguage === 'ru' ? 
+                        `Реклама завершена. Вы получили ${ad.reward} ₽.` :
+                        `Ad completed. You received ${ad.reward} ₽.`);
                 }
             }, 300);
         }
@@ -1565,7 +1529,7 @@
             
             if (adElement) adElement.classList.add('disabled');
             if (adAction) {
-                adAction.textContent = 'Ավարտված';
+                adAction.textContent = currentLanguage === 'ru' ? 'Завершено' : 'Completed';
                 adAction.classList.add('completed');
                 adAction.disabled = true;
             }
@@ -1580,20 +1544,24 @@
                 adCard.className = `ad-card ${isCompleted ? 'disabled' : ''}`;
                 adCard.id = `ad-${ad.id}`;
                 
+                const currencyText = '₽';
+                const watchText = currentLanguage === 'ru' ? 'Смотреть Рекламу' : 'Watch Ad';
+                const completedText = currentLanguage === 'ru' ? 'Завершено' : 'Completed';
+                
                 adCard.innerHTML = `
                     <div class="ad-icon">
                         <i class="fas fa-${ad.icon}"></i>
                     </div>
-                    <div class="ad-title">${ad.title}</div>
+                    <div class="ad-title">${currentLanguage === 'ru' ? ad.title.ru : ad.title.en}</div>
                     <div class="ad-reward">
-                        <i class="fas fa-coins"></i> +${ad.reward} Դրամ
+                        <i class="fas fa-coins"></i> +${ad.reward} ${currencyText}
                     </div>
-                    <div class="ad-duration">${ad.duration}</div>
+                    <div class="ad-duration">${currentLanguage === 'ru' ? ad.duration.ru : ad.duration.en}</div>
                     <button class="ad-action ${isCompleted ? 'completed' : ''}" 
                             id="ad-action-${ad.id}"
                             ${isCompleted ? 'disabled' : ''}
                             onclick="showMonetagAd(${ad.id})">
-                        ${isCompleted ? 'Ավարտված' : 'Դիտել Գովազդ'}
+                        ${isCompleted ? completedText : watchText}
                     </button>
                 `;
                 
@@ -1606,7 +1574,7 @@
             navigator.clipboard.writeText(userData.referralLink).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 const originalText = btn.textContent;
-                btn.textContent = 'Պատճենված։';
+                btn.textContent = currentLanguage === 'ru' ? 'Скопировано!' : 'Copied!';
                 btn.style.background = 'var(--accent)';
                 
                 setTimeout(() => {
@@ -1614,7 +1582,9 @@
                     btn.style.background = 'white';
                 }, 2000);
                 
-                showToast('Ուղղորդման հղումը պատճենվեց։');
+                showToast(currentLanguage === 'ru' ? 
+                    'Реферальная ссылка скопирована.' :
+                    'Referral link copied.');
             }).catch(() => {
                 // Fallback for older browsers
                 const tempInput = document.createElement('input');
@@ -1624,47 +1594,58 @@
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
                 
-                showToast('Ուղղորդման հղումը պատճենվեց։');
+                showToast(currentLanguage === 'ru' ? 
+                    'Реферальная ссылка скопирована.' :
+                    'Referral link copied.');
             });
         }
 
         // Update UI with user data
         function updateUI() {
-            document.getElementById('balanceAmount').textContent = userData.balance.toLocaleString();
+            document.getElementById('balanceValue').textContent = userData.balance.toLocaleString();
             document.getElementById('adsWatched').textContent = userData.adsWatchedToday;
             document.getElementById('referralsCount').textContent = userData.referrals;
-            document.getElementById('totalEarned').textContent = userData.totalEarned.toLocaleString() + ' Դրամ';
+            document.getElementById('totalEarnedValue').textContent = userData.totalEarned.toLocaleString();
             
             document.getElementById('referralLink').textContent = userData.referralLink;
             document.getElementById('referralFriends').textContent = userData.referrals;
-            document.getElementById('referralPoints').textContent = (userData.referrals * 1000).toLocaleString() + ' Դրամ';
-            document.getElementById('referralEarned').textContent = (userData.referrals * 1000).toLocaleString() + ' Դրամ';
+            document.getElementById('referralPointsValue').textContent = (userData.referrals * 250).toLocaleString(); // Changed from 1000 to 250
+            document.getElementById('referralEarnedValue').textContent = (userData.referrals * 250).toLocaleString(); // Changed from 1000 to 250
             
             // Update daily progress
             const progressPercentage = (userData.todayWatchedAds.length / 10) * 100;
-            document.getElementById('dailyProgress').textContent = `${userData.todayWatchedAds.length}/10 գովազդ դիտված`;
+            document.getElementById('dailyProgress').textContent = currentLanguage === 'ru' ? 
+                `${userData.todayWatchedAds.length}/10 просмотренных реклам` :
+                `${userData.todayWatchedAds.length}/10 ads watched`;
             document.getElementById('progressFillBar').style.width = `${progressPercentage}%`;
             document.getElementById('progressText').textContent = 
                 userData.todayWatchedAds.length >= 10 ? 
-                'Բոլոր գովազդները դիտված են այսօր։ Վերադարձեք վաղը։' : 
-                'Դիտեք գովազդներ դրամ ստանալու համար։ Յուրաքանչյուր գովազդ կարելի է դիտել օրական մեկ անգամ';
+                (currentLanguage === 'ru' ? 
+                    'Все рекламы просмотрены сегодня. Вернитесь завтра.' : 
+                    'All ads watched today. Come back tomorrow.') : 
+                (currentLanguage === 'ru' ? 
+                    'Смотрите рекламу, чтобы заработать деньги. Каждую рекламу можно смотреть один раз в день' :
+                    'Watch ads to earn money. Each ad can be watched once per day');
 
-            // Show welcome bonus for new users who haven't claimed it
-            if (!userData.welcomeBonusClaimed && userData.totalEarned === 0) {
+            // Show welcome bonus for all users who haven't claimed it
+            if (!userData.welcomeBonusClaimed) {
                 document.getElementById('welcomeBonus').style.display = 'block';
             } else {
                 document.getElementById('welcomeBonus').style.display = 'none';
             }
+            
+            // Update ad buttons and texts based on language
+            renderAds();
         }
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             loadUserData();
             renderAds();
+            updateLanguage();
             
             // Add event listeners for withdrawal form validation
-            document.getElementById('telcellInput').addEventListener('input', checkWithdrawalForm);
-            document.getElementById('idramInput').addEventListener('input', checkWithdrawalForm);
+            document.getElementById('qiwiInput').addEventListener('input', checkWithdrawalForm);
             document.getElementById('withdrawAmount').addEventListener('input', checkWithdrawalForm);
             
             const elements = document.querySelectorAll('.ad-card');
@@ -1677,14 +1658,14 @@
             setTimeout(() => {
                 if (userData.referredUsers.length === 0 && Math.random() > 0.5) {
                     // Simulate a referral coming in
-                    const demoUsers = ["Ընկեր1", "Ընկեր2", "Ընկեր3"];
+                    const demoUsers = currentLanguage === 'ru' ? ["Друг1", "Друг2", "Друг3"] : ["Friend1", "Friend2", "Friend3"];
                     const randomUser = demoUsers[Math.floor(Math.random() * demoUsers.length)];
                     
                     if (referralDatabase[userData.userId]) {
                         referralDatabase[userData.userId].referrals.push({
                             userId: "demo_" + Math.random().toString(36).substr(2, 5),
                             username: randomUser,
-                            date: new Date().toLocaleDateString('hy-AM'),
+                            date: new Date().toLocaleDateString('ru-RU'),
                             bonusPaid: false
                         });
                         updateReferralDatabase();
